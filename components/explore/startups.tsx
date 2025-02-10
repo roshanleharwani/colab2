@@ -53,8 +53,10 @@ const startups = [
   },
   // Add more startups as needed
 ];
+import { useRouter } from "next/navigation";
 
 export function Startups() {
+  const router = useRouter();
   return (
     <div className="flex flex-col h-full">
       <header className="border-b">
@@ -79,7 +81,13 @@ export function Startups() {
               </SelectContent>
             </Select>
           </div>
-          <Button>List Startup</Button>
+          <Button
+            onClick={() => {
+              router.push("/explore/register/startup");
+            }}
+          >
+            List Startup
+          </Button>
         </div>
       </header>
       <main className="flex-1 overflow-auto">

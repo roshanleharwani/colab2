@@ -20,6 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Calendar, Search, Trophy, Users } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 const competitions = [
   {
     title: "Campus Hackathon 2024",
@@ -55,6 +56,7 @@ const competitions = [
 ];
 
 export function Competitions() {
+  const router = useRouter();
   return (
     <div className="flex flex-col h-full">
       <header className="border-b">
@@ -79,7 +81,13 @@ export function Competitions() {
               </SelectContent>
             </Select>
           </div>
-          <Button>Register Team</Button>
+          <Button
+            onClick={() => {
+              router.push("/explore/register/competition");
+            }}
+          >
+            Register Team
+          </Button>
         </div>
       </header>
       <main className="flex-1 overflow-auto">

@@ -20,6 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Users, Search } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 const projects = [
   {
     title: "AI-Powered Study Assistant",
@@ -52,6 +53,7 @@ const projects = [
 ];
 
 export function Projects() {
+  const router = useRouter();
   return (
     <div className="flex flex-col h-full">
       <header className="border-b">
@@ -76,7 +78,13 @@ export function Projects() {
               </SelectContent>
             </Select>
           </div>
-          <Button>Create Project</Button>
+          <Button
+            onClick={() => {
+              router.push("/explore/register/project");
+            }}
+          >
+            Create Project
+          </Button>
         </div>
       </header>
       <main className="flex-1 overflow-auto">
