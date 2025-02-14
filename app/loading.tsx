@@ -6,7 +6,7 @@ export default function Loading() {
       <img
         alt="Loading"
         src={"/handshake.gif"}
-        className="h-16 w-16 text-gray-500 "
+        className="h-36  text-gray-500 "
       />
     </div>
   );

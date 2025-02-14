@@ -22,7 +22,7 @@ interface FormData {
   email: string;
   phone: string;
   degree: string;
-  regNumber: string;
+  registration_number: string;
   password: string;
   confirmPassword: string;
 }
@@ -32,7 +32,7 @@ const INITIAL_DATA: FormData = {
   email: "",
   phone: "",
   degree: "",
-  regNumber: "",
+  registration_number: "",
   password: "",
   confirmPassword: "",
 };
@@ -71,7 +71,7 @@ export default function SignUpPage() {
     // Handle final submission here
     setTimeout(() => {
       setIsLoading(false);
-    }, 1000);
+    }, 5000);
   }
 
   return (
@@ -189,9 +189,9 @@ export default function SignUpPage() {
                     <Input
                       id="regNumber"
                       placeholder="2021BTCS001"
-                      value={data.regNumber}
+                      value={data.registration_number}
                       onChange={(e) =>
-                        updateFields({ regNumber: e.target.value })
+                        updateFields({ registration_number: e.target.value })
                       }
                       required
                     />
