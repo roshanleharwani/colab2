@@ -86,7 +86,7 @@ export function Competitions() {
               router.push("/explore/register/competition");
             }}
           >
-            Register Team
+            Register Competition
           </Button>
         </div>
       </header>

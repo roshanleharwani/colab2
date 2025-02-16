@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState } from "react";
@@ -143,13 +144,37 @@ export default function CompetitionRegistrationPage() {
     if (step < steps.length) {
       await handleNext();
     } else {
-      // Final submission
-      toast({
-        title: "Success!",
-        description: "Your competition has been registered.",
-      });
-      console.log("Form data:", data);
-      router.push("/explore/competitions");
+      try {
+        const response = await fetch("/api/register/competition", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          toast({
+            title: "Error",
+            description: errorData.message || "Failed to register project.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        toast({
+          title: "Success!",
+          description: "Your project has been registered.",
+        });
+        router.push("/explore/competitions");
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "An unexpected error occurred.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
