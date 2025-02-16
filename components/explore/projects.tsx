@@ -24,7 +24,8 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 interface Project {
-  title: string;
+  _id:string
+  name: string;
   description: string;
   category: string;
   teamSize: string;
@@ -121,12 +122,12 @@ export function Projects() {
 
                 return (
                   <motion.div
-                    key={project?.title || index}
+                    key={project?.name || index}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: index * 0.1 }}
                   >
-                    <Link href="/explore/projects/id">
+                    <Link href={`/explore/projects/${project?._id}`}>
                       <Card className="h-full w-full">
                         <CardHeader>
                           <div className="flex items-center justify-between">
@@ -136,7 +137,7 @@ export function Projects() {
                             <Badge>{project?.status || "Unknown"}</Badge>
                           </div>
                           <CardTitle className="mt-4">
-                            {project?.title || "Untitled Project"}
+                            {project?.name || "Untitled Project"}
                           </CardTitle>
                           <CardDescription>
                             {project?.description || "No description available"}
