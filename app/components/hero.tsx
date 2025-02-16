@@ -75,10 +75,17 @@ export default function Hero() {
               size="lg"
               className="text-lg"
             >
-              Find Projects
+              Explore
             </Button>
-            <Button size="lg" variant="outline" className="text-lg">
-              Post Project
+            <Button
+              onClick={() => {
+                Router.push("#features");
+              }}
+              size="lg"
+              variant="outline"
+              className="text-lg"
+            >
+              Learn More
             </Button>
           </motion.div>
         </div>

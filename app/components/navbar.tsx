@@ -1,5 +1,8 @@
 "use client";
+
+import * as React from "react";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -7,101 +10,170 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
-import { Code2, Users } from "lucide-react";
-import { useRouter } from "next/navigation";
-export default function Navbar() {
-  const Router = useRouter();
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Menu, Code2 } from "lucide-react";
+
+const components: { title: string; href: string; description: string }[] = [
+  {
+    title: "Projects",
+    href: "/explore/projects",
+    description:
+      "Browse and join exciting student projects across various domains.",
+  },
+  {
+    title: "Startups",
+    href: "/explore/startups",
+    description: "Discover and be part of innovative student-led startups.",
+  },
+  {
+    title: "Competitions",
+    href: "/explore/competitions",
+    description:
+      "Participate in hackathons, coding contests, and other competitions.",
+  },
+];
+
+export function Navbar() {
+  const [isOpen, setIsOpen] = React.useState(false);
+
   return (
-    <div className="border-b">
-      <div className="flex h-16 items-center px-4 container mx-auto">
-        <Link href="/" className="flex items-center space-x-2">
-          <Code2 className="h-6 w-6" />
-          <span className="font-bold">CollabCampus</span>
-        </Link>
-        <NavigationMenu className="mx-6">
-          <NavigationMenuList>
-            <NavigationMenuItem>
-              <NavigationMenuTrigger>Explore</NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                  <li className="row-span-3">
-                    <NavigationMenuLink asChild>
-                      <Link
-                        className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                        href="/"
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-14 items-center">
+        <div className="mr-4 hidden md:flex">
+          <NavigationMenu>
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger>Explore</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                    {components.map((component) => (
+                      <ListItem
+                        key={component.title}
+                        title={component.title}
+                        href={component.href}
                       >
-                        <Users className="h-6 w-6" />
-                        <div className="mb-2 mt-4 text-lg font-medium">
-                          Projects
-                        </div>
-                        <p className="text-sm leading-tight text-muted-foreground">
-                          Find exciting projects and collaborate with peers
-                        </p>
-                      </Link>
-                    </NavigationMenuLink>
-                  </li>
-                  <li>
-                    <NavigationMenuLink asChild>
-                      <Link
-                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                        href="/"
-                      >
-                        <div className="text-sm font-medium leading-none">
-                          Hackathons
-                        </div>
-                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                          Join upcoming hackathons and form teams
-                        </p>
-                      </Link>
-                    </NavigationMenuLink>
-                  </li>
-                  <li>
-                    <NavigationMenuLink asChild>
-                      <Link
-                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                        href="/"
-                      >
-                        <div className="text-sm font-medium leading-none">
-                          Startups
-                        </div>
-                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                          Connect with student startups and join their journey
-                        </p>
-                      </Link>
-                    </NavigationMenuLink>
-                  </li>
-                </ul>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link href="/about" legacyBehavior passHref>
-                <NavigationMenuLink className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50">
-                  About
-                </NavigationMenuLink>
+                        {component.description}
+                      </ListItem>
+                    ))}
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link href="/about" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    About
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link href="/contact" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    Contact
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+        </div>
+
+        {/* Mobile Menu */}
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <SheetTrigger asChild className="md:hidden">
+            <Button variant="ghost" size="icon" className="mr-2">
+              <Menu className="h-5 w-5" />
+              <span className="sr-only">Toggle menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+            <nav className="flex flex-col gap-4">
+              <Link
+                href="/explore"
+                onClick={() => setIsOpen(false)}
+                className="block px-2 py-1 text-lg"
+              >
+                Projects
               </Link>
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
-        <div className="ml-auto flex items-center space-x-4">
-          <Button
-            onClick={() => {
-              Router.push("/sign-in");
-            }}
-            variant="outline"
-          >
-            Log in
-          </Button>
-          <Button
-            onClick={() => {
-              Router.push("/sign-up");
-            }}
-          >
-            Sign up
-          </Button>
+              <Link
+                href="/explore/startups"
+                onClick={() => setIsOpen(false)}
+                className="block px-2 py-1 text-lg"
+              >
+                Startups
+              </Link>
+              <Link
+                href="/explore/competitions"
+                onClick={() => setIsOpen(false)}
+                className="block px-2 py-1 text-lg"
+              >
+                Competitions
+              </Link>
+              <Link
+                href="/about"
+                onClick={() => setIsOpen(false)}
+                className="block px-2 py-1 text-lg"
+              >
+                About
+              </Link>
+              <Link
+                href="/contact"
+                onClick={() => setIsOpen(false)}
+                className="block px-2 py-1 text-lg"
+              >
+                Contact
+              </Link>
+            </nav>
+          </SheetContent>
+        </Sheet>
+
+        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+          <div className="w-full flex-1 md:w-auto md:flex-none">
+            <Link href="/" className="mr-6 flex items-center space-x-2">
+              <Code2 className="h-8 w-8" />
+              <span className="font-bold inline-block">CoLab</span>
+            </Link>
+          </div>
+          <nav className="flex items-center space-x-2">
+            <Button variant="ghost" asChild className="hidden md:inline-flex">
+              <Link href="/sign-in">Login</Link>
+            </Button>
+            <Button asChild className="hidden md:inline-flex">
+              <Link href="/sign-up">Get Started</Link>
+            </Button>
+            <Button variant="ghost" asChild className="md:hidden">
+              <Link href="/sign-in">Login</Link>
+            </Button>
+          </nav>
         </div>
       </div>
-    </div>
+    </header>
   );
 }
+
+const ListItem = React.forwardRef<
+  React.ElementRef<"a">,
+  React.ComponentPropsWithoutRef<"a">
+>(({ className, title, children, ...props }, ref) => {
+  return (
+    <li>
+      <NavigationMenuLink asChild>
+        <a
+          ref={ref}
+          className={cn(
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            className
+          )}
+          {...props}
+        >
+          <div className="text-sm font-medium leading-none">{title}</div>
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+            {children}
+          </p>
+        </a>
+      </NavigationMenuLink>
+    </li>
+  );
+});
+ListItem.displayName = "ListItem";

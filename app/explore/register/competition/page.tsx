@@ -149,7 +149,7 @@ export default function CompetitionRegistrationPage() {
         description: "Your competition has been registered.",
       });
       console.log("Form data:", data);
-      router.push("/dashboard");
+      router.push("/explore/competitions");
     }
   };
 
@@ -180,7 +180,7 @@ export default function CompetitionRegistrationPage() {
                   <FormControl>
                     <Textarea
                       placeholder="Describe your competition..."
-                      className="min-h-[100px]"
+                      className="min-h-[100px] resize-none"
                       {...field}
                     />
                   </FormControl>

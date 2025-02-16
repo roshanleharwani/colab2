@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Code2 } from "lucide-react";
 import Link from "next/link";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -17,15 +19,44 @@ import {
 } from "@/components/ui/card";
 
 export default function SignInPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setIsLoading(true);
 
-    setTimeout(() => {
+    try {
+      const response = await fetch("/api/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
+      if (response.ok) {
+        router.push("/explore");
+        toast.success("Logged In");
+      } else if (response.status === 401) {
+        toast.error("Invalid email or password.");
+        setIsLoading(false);
+      } else if (response.status === 404) {
+        toast.error("User not found");
+        setIsLoading(false);
+      } else {
+        toast.error("Something went wrong. Please try again later.");
+        setIsLoading(false);
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (err) {
+      toast.error("Something went wrong. Please try again later.");
       setIsLoading(false);
-    }, 1000);
+    }
   }
 
   return (
@@ -80,6 +111,10 @@ export default function SignInPage() {
                 type="email"
                 placeholder="m@example.com"
                 required
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
                 disabled={isLoading}
               />
             </div>
@@ -89,6 +124,10 @@ export default function SignInPage() {
                 id="password"
                 type="password"
                 required
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
                 disabled={isLoading}
               />
             </div>

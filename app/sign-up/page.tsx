@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Code2 } from "lucide-react";
+import { toast } from "react-hot-toast";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -38,6 +40,7 @@ const INITIAL_DATA: FormData = {
 };
 
 export default function SignUpPage() {
+  const router = useRouter();
   const [step, setStep] = useState(1);
   const [data, setData] = useState(INITIAL_DATA);
   const [isLoading, setIsLoading] = useState(false);
@@ -67,11 +70,36 @@ export default function SignUpPage() {
       next();
       return;
     }
+    if (data.password !== data.confirmPassword) {
+      toast.error("Passwords do not match.");
+      return;
+    }
     setIsLoading(true);
     // Handle final submission here
-    setTimeout(() => {
+    try {
+      const response = await fetch("/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (response.ok) {
+        toast.success("Account created successfully.");
+        router.push("/explore");
+      } else if (response.status === 409) {
+        toast.error("User already exists.");
+        setIsLoading(false);
+        return;
+      } else {
+        toast.error("An error occurred. Please try again later.");
+        setIsLoading(false);
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (err) {
+      toast.error("An error occurred. Please try again later.");
       setIsLoading(false);
-    }, 5000);
+    }
   }
 
   return (
@@ -109,7 +137,7 @@ export default function SignUpPage() {
           <div className="flex items-center justify-center mb-6">
             <Link href="/" className="flex items-center space-x-2">
               <Code2 className="h-8 w-8" />
-              <span className="font-bold text-2xl">CollabCampus</span>
+              <span className="font-bold text-2xl">Collab Campus</span>
             </Link>
           </div>
           <CardTitle className="text-2xl text-center">
@@ -188,7 +216,7 @@ export default function SignUpPage() {
                     <Label htmlFor="regNumber">Registration Number</Label>
                     <Input
                       id="regNumber"
-                      placeholder="2021BTCS001"
+                      placeholder="2021CS001"
                       value={data.registration_number}
                       onChange={(e) =>
                         updateFields({ registration_number: e.target.value })

@@ -159,7 +159,7 @@ export default function StartupRegistrationPage() {
         description: "Your startup has been registered.",
       });
       console.log("Form data:", data);
-      router.push("/dashboard");
+      router.push("/explore/startups");
     }
   };
 
@@ -206,7 +206,7 @@ export default function StartupRegistrationPage() {
                   <FormControl>
                     <Textarea
                       placeholder="Describe your startup..."
-                      className="min-h-[100px]"
+                      className="min-h-[100px] resize-none"
                       {...field}
                     />
                   </FormControl>

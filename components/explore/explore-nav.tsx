@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut, Trophy, Rocket, FolderGit2, Search } from "lucide-react";
+import { LogOut, Trophy, Rocket, FolderGit2, Search, Bell } from "lucide-react";
 import { usePathname } from "next/navigation";
 import {
   Sidebar,
@@ -13,7 +13,7 @@ import {
   SidebarInput,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-
+import { useRouter } from "next/navigation";
 const menuItems = [
   {
     title: "Projects",
@@ -30,10 +30,30 @@ const menuItems = [
     icon: Rocket,
     href: "/explore/startups",
   },
+  {
+    title: "Notifications",
+    icon: Bell,
+    href: "/explore/notifications",
+  },
 ];
-
+import { toast } from "react-hot-toast";
 export function ExploreNav() {
   const pathname = usePathname();
+  const router = useRouter();
+  const handleLogout = async () => {
+    const response = await fetch("/api/signout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.ok) {
+      toast.success("Logged out");
+      router.push("/");
+    } else {
+      toast.error("Failed to logout");
+    }
+  };
 
   return (
     <Sidebar>
@@ -67,7 +87,12 @@ export function ExploreNav() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton className="text-red-500 hover:text-red-600 hover:bg-red-50">
+            <SidebarMenuButton
+              className="text-red-500 hover:text-red-600 hover:bg-red-50"
+              onClick={() => {
+                handleLogout();
+              }}
+            >
               <LogOut className="h-4 w-4" />
               <span>Logout</span>
             </SidebarMenuButton>

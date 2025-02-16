@@ -141,13 +141,37 @@ export default function ProjectRegistrationPage() {
     if (step < steps.length) {
       await handleNext();
     } else {
-      // Final submission
-      toast({
-        title: "Success!",
-        description: "Your project has been registered.",
-      });
-      console.log("Form data:", data);
-      router.push("/dashboard");
+      try {
+        const response = await fetch("/api/register/project", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          toast({
+            title: "Error",
+            description: errorData.message || "Failed to register project.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        toast({
+          title: "Success!",
+          description: "Your project has been registered.",
+        });
+        router.push("/explore");
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "An unexpected error occurred.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
@@ -178,7 +202,7 @@ export default function ProjectRegistrationPage() {
                   <FormControl>
                     <Textarea
                       placeholder="Describe your project..."
-                      className="min-h-[100px]"
+                      className="min-h-[100px] resize-none"
                       {...field}
                     />
                   </FormControl>

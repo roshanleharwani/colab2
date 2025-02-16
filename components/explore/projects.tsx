@@ -21,39 +21,57 @@ import { Input } from "@/components/ui/input";
 import { Users, Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-const projects = [
-  {
-    title: "AI-Powered Study Assistant",
-    description:
-      "Building an AI assistant to help students organize their study materials and create personalized learning paths.",
-    category: "Machine Learning",
-    teamSize: "3-4",
-    skills: ["Python", "Machine Learning", "NLP", "React"],
-    status: "Active",
-  },
-  {
-    title: "Campus Navigation App",
-    description:
-      "Developing a mobile app to help students navigate the campus, find classrooms, and get real-time updates about facilities.",
-    category: "Mobile Development",
-    teamSize: "2-3",
-    skills: ["React Native", "Node.js", "MongoDB"],
-    status: "Active",
-  },
-  {
-    title: "Student Marketplace",
-    description:
-      "Creating a platform for students to buy, sell, and exchange academic materials and other items within the campus community.",
-    category: "Web Development",
-    teamSize: "4-5",
-    skills: ["Next.js", "TypeScript", "Prisma", "PostgreSQL"],
-    status: "Active",
-  },
-  // Add more projects as needed
-];
+import { useState, useEffect } from "react";
+
+interface Project {
+  title: string;
+  description: string;
+  category: string;
+  teamSize: string;
+  skills: string[];
+  status: string;
+}
 
 export function Projects() {
   const router = useRouter();
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch("/api/register/project");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log("API Response:", data); // Debug log
+
+        // Check if data is an array and has the expected structure
+        const formattedData = Array.isArray(data) ? data : data.projects || [];
+        console.log("Formatted Data:", formattedData); // Debug log
+
+        setProjects(formattedData);
+      } catch (err) {
+        console.error("Error details:", err); // Debug log
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch projects"
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
+  // Debug log for current state
+  console.log("Current projects state:", projects);
+  console.log("Loading state:", isLoading);
+  console.log("Error state:", error);
+
   return (
     <div className="flex flex-col h-full">
       <header className="border-b">
@@ -89,48 +107,70 @@ export function Projects() {
       </header>
       <main className="flex-1 overflow-auto">
         <div className="container py-6 px-2">
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
-            {projects.map((project, index) => (
-              <motion.div
-                key={project.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-              >
-                <Link href="/explore/projects/id">
-                  <Card className="h-full">
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <Badge variant="secondary">{project.category}</Badge>
-                        <Badge>{project.status}</Badge>
-                      </div>
-                      <CardTitle className="mt-4">{project.title}</CardTitle>
-                      <CardDescription>{project.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex flex-col gap-4">
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Users className="h-4 w-4" />
-                          <span>Team Size: {project.teamSize}</span>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {project.skills.map((skill) => (
-                            <Badge
-                              key={skill}
-                              variant="outline"
-                              className="bg-primary/5"
-                            >
-                              {skill}
+          {isLoading ? (
+            <div className="text-center py-8">Loading projects...</div>
+          ) : error ? (
+            <div className="text-center py-8 text-red-500">Error: {error}</div>
+          ) : !projects || projects.length === 0 ? (
+            <div className="text-center py-8">No projects found.</div>
+          ) : (
+            <div className="grid gap-6 lg:grid-cols-2">
+              {projects.map((project, index) => {
+                // Debug log for each project
+                console.log("Rendering project:", project);
+
+                return (
+                  <motion.div
+                    key={project?.title || index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: index * 0.1 }}
+                  >
+                    <Link href="/explore/projects/id">
+                      <Card className="h-full w-full">
+                        <CardHeader>
+                          <div className="flex items-center justify-between">
+                            <Badge variant="secondary">
+                              {project?.category || "No Category"}
                             </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
+                            <Badge>{project?.status || "Unknown"}</Badge>
+                          </div>
+                          <CardTitle className="mt-4">
+                            {project?.title || "Untitled Project"}
+                          </CardTitle>
+                          <CardDescription>
+                            {project?.description || "No description available"}
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="flex flex-col gap-4">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <Users className="h-4 w-4" />
+                              <span>
+                                Team Size:{" "}
+                                {project?.teamSize || "Not specified"}
+                              </span>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              {project?.skills?.map((skill, skillIndex) => (
+                                <Badge
+                                  key={`${skill}-${skillIndex}`}
+                                  variant="outline"
+                                  className="bg-primary/5"
+                                >
+                                  {skill}
+                                </Badge>
+                              )) || null}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </main>
     </div>
