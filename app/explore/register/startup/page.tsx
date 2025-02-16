@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState } from "react";
@@ -153,16 +154,39 @@ export default function StartupRegistrationPage() {
     if (step < steps.length) {
       await handleNext();
     } else {
-      // Final submission
-      toast({
-        title: "Success!",
-        description: "Your startup has been registered.",
-      });
-      console.log("Form data:", data);
-      router.push("/explore/startups");
+      try {
+        const response = await fetch("/api/register/startup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          toast({
+            title: "Error",
+            description: errorData.message || "Failed to register project.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        toast({
+          title: "Success!",
+          description: "Your project has been registered.",
+        });
+        router.push("/explore/startups");
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "An unexpected error occurred.",
+          variant: "destructive",
+        });
+      }
     }
   };
-
   function renderStepContent(step: number) {
     switch (step) {
       case 1:
