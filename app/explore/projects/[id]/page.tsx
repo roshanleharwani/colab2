@@ -1,7 +1,9 @@
+"use client"
+
 import { ProjectDetails } from "@/app/components/project-details";
 import { TeamRoster } from "@/app/components/team-roster";
 import { JoinProjectRequest } from "@/app/components/join-project-request";
-
+import {useEffect} from "react";
 // This would come from your database
 const mockProject = {
   id: "1",
@@ -43,6 +45,24 @@ const mockProject = {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function ProjectPage({ params }: { params: { id: string } }) {
+  const { id } = params;
+  console.log("projectId: ",id);
+  useEffect(() => {
+    // fetching project details from the server
+    const fetchProject=async()=>{
+      try{
+        const response=await fetch(`/api/register/project/${id}`)
+        if(!response.ok){
+          throw new Error("Error fetching project details");
+        }
+        const data=await response.json();
+        console.log("Project details: ",data);
+      }catch(error){
+        console.error("Error fetching project details: ",error);
+    }
+    fetchProject();
+    }
+  }, [id]);
   const isFullyRecruited = mockProject.members.length >= mockProject.maxMembers;
 
   return (
