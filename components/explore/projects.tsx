@@ -24,7 +24,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 interface Project {
-  _id:string
+  _id: string;
   name: string;
   description: string;
   category: string;
@@ -118,11 +118,10 @@ export function Projects() {
             <div className="grid gap-6 lg:grid-cols-2">
               {projects.map((project, index) => {
                 // Debug log for each project
-                console.log("Rendering project:", project);
 
                 return (
                   <motion.div
-                    key={project?.name || index}
+                    key={project?._id || index}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: index * 0.1 }}
