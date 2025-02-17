@@ -72,7 +72,7 @@ export async function GET() {
     await connect()
 
     const startups = await Startup.find({ isRecruiting: true })
-      .select("name tagline description industry fundingStage location")
+      .select("name tagline description industry fundingStage location title category team maxTeamSize")
       .sort({ createdAt: -1 })
       .limit(10)
 
