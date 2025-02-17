@@ -2,20 +2,23 @@
 import { NextResponse } from "next/server"
 import connect from "@/lib/connect"
 import { JoinRequest } from "@/app/models/join-request"
-
+import { request } from "http"
+import User from "@/app/models/User"
+import { Project } from "@/app/models/project"
 export async function POST(req: Request) {
   try {
     await connect()
 
     const data = await req.json()
-
+    console.log("data",data);
     // Create join request with the provided data
     const joinRequest = await JoinRequest.create({
       type: data.type,
-      projectId: data.type === "project" ? data.entityId : undefined,
-      startupId: data.type === "startup" ? data.entityId : undefined,
-      teamId: data.type === "team" ? data.entityId : undefined,
-      userId: data.userId,
+      projectId: data.type === "project" ? data.projectId : undefined,
+      startupId: data.type === "startup" ? data.projectId : undefined,
+      teamId: data.type === "team" ? data.projectId : undefined,
+      FromUserId: data.user,
+      ToUserId:data.leader,
       message: data.message,
       role: data.role,
     })
@@ -64,36 +67,19 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   try {
+    console.log("I am iin here");
     await connect()
 
     const { searchParams } = new URL(req.url)
     const userId = searchParams.get("userId")
-    const status = searchParams.get("status") || "pending"
-
+    console.log("userId",userId);
     if (!userId) {
       return NextResponse.json({ message: "User ID is required" }, { status: 400 })
     }
 
-    const requests = await JoinRequest.find({ userId, status })
-      .populate([
-        {
-          path: "projectId",
-          select: "name description category",
-        },
-        {
-          path: "startupId",
-          select: "name tagline industry",
-        },
-        {
-          path: "teamId",
-          select: "name description competition",
-          populate: {
-            path: "competition",
-            select: "name type",
-          },
-        },
-      ])
-      .sort({ createdAt: -1 })
+    const requests = await JoinRequest.find({ ToUserId:userId, status:"pending" }).select("FromUserId projectId role message createdAt _id").populate("FromUserId","name").populate("projectId","name")
+    console.log(requests);
+
 
     return NextResponse.json(requests)
   } catch (error: any) {

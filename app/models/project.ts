@@ -83,6 +83,11 @@ const ProjectSchema = new Schema(
       },
     },
     leader: {
+      id:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: [true, "Leader ID is required"],
+      },
       name: {
         type: String,
         required: [true, "Leader name is required"],

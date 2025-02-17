@@ -59,6 +59,7 @@ export default function ProjectPage(){
       name: "",
       email: "",
       regNumber: "",
+      id:"",
     }
   });
   const [members,setMembers]=useState([]);
@@ -73,6 +74,7 @@ export default function ProjectPage(){
           throw new Error("Error fetching project details");
         }
         const data=await response.json();
+        
         setProject(data.project);
         setMembers(data.members);
       }catch(error){
@@ -99,6 +101,7 @@ export default function ProjectPage(){
               id:project._id,
               name: project.name,
               recruiting: project.isRecruiting,
+              leader: { id: project.leader.id },
             }}
              
             isFullyRecruited={isFullyRecruited}
