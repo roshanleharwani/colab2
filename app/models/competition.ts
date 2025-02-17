@@ -32,7 +32,7 @@ const CompetitionSchema = new Schema(
     type: {
       type: String,
       required: [true, "Competition type is required"],
-      enum: ["hackathon", "ideathon", "coding", "design"],
+      enum: ["Hackathon", "Ideathon", "Coding", "Design"],
     },
     startDate: {
       type: Date,
@@ -59,7 +59,7 @@ const CompetitionSchema = new Schema(
     },
     prize: {
       type: String,
-      required: [true, "Prize details are required"],
+      required: [false, "Prize details are required"],
       minlength: [1, "Prize details must not be empty"],
     },
     requirements: {
@@ -80,8 +80,8 @@ const CompetitionSchema = new Schema(
     ],
     status: {
       type: String,
-      enum: ["upcoming", "ongoing", "completed"],
-      default: "upcoming",
+      enum: ["Upcoming", "Ongoing", "Completed"],
+      default: "Upcoming",
     },
   },
   {
@@ -99,11 +99,11 @@ CompetitionSchema.index({ status: 1 })
 CompetitionSchema.pre("save", function (next) {
   const now = new Date()
   if (this.startDate > now) {
-    this.status = "upcoming"
+    this.status = "Upcoming"
   } else if (this.endDate < now) {
-    this.status = "completed"
+    this.status = "Completed"
   } else {
-    this.status = "ongoing"
+    this.status = "Ongoing"
   }
   next()
 })

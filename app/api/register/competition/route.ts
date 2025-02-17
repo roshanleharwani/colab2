@@ -59,7 +59,7 @@ export async function GET() {
     await connect()
 
     const competitions = await Competition.find()
-      .select("name description type startDate endDate prize status")
+      .select("name description type startDate endDate prize status maxTeamSize")
       .sort({ startDate: 1 })
       .limit(10)
 

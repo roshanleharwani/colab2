@@ -258,15 +258,15 @@ export default function StartupRegistrationPage() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="tech">Technology</SelectItem>
-                      <SelectItem value="health">Healthcare</SelectItem>
-                      <SelectItem value="edu">Education</SelectItem>
-                      <SelectItem value="finance">Finance</SelectItem>
-                      <SelectItem value="ecommerce">E-Commerce</SelectItem>
-                      <SelectItem value="sustainability">
+                      <SelectItem value="Tech">Technology</SelectItem>
+                      <SelectItem value="Health">Healthcare</SelectItem>
+                      <SelectItem value="Edu">Education</SelectItem>
+                      <SelectItem value="Finance">Finance</SelectItem>
+                      <SelectItem value="E-commerce">E-Commerce</SelectItem>
+                      <SelectItem value="Sustainability">
                         Sustainability
                       </SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -295,11 +295,11 @@ export default function StartupRegistrationPage() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="ideation">Ideation</SelectItem>
-                        <SelectItem value="mvp">MVP</SelectItem>
-                        <SelectItem value="seed">Seed</SelectItem>
-                        <SelectItem value="series-a">Series A</SelectItem>
-                        <SelectItem value="series-b">Series B</SelectItem>
+                        <SelectItem value="Ideation">Ideation</SelectItem>
+                        <SelectItem value="MVP">MVP</SelectItem>
+                        <SelectItem value="Seed">Seed</SelectItem>
+                        <SelectItem value="Series-A">Series A</SelectItem>
+                        <SelectItem value="Series-B">Series B</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />

@@ -49,12 +49,12 @@ const StartupSchema = new Schema(
     industry: {
       type: String,
       required: [true, "Industry is required"],
-      enum: ["tech", "health", "edu", "finance", "ecommerce", "sustainability", "other"],
+      enum: ["Tech", "Health", "Edu", "Finance", "E-commerce", "Sustainability", "Other"],
     },
     fundingStage: {
       type: String,
       required: [true, "Funding stage is required"],
-      enum: ["ideation", "mvp", "seed", "series-a", "series-b"],
+      enum: ["Ideation", "MVP", "Seed", "Series-A", "Series-B"],
     },
     founded: {
       type: String,

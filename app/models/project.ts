@@ -1,5 +1,4 @@
 import mongoose, { Schema, type Document } from "mongoose"
-import User from "@/app/models/User"
 export interface IProject extends Document {
   name: string
   description: string
@@ -16,7 +15,7 @@ export interface IProject extends Document {
   }
   requirements: string
   members: mongoose.Types.ObjectId[]
-  status: "active" | "completed" | "cancelled"
+  status: "Active" | "Completed" | "Cancelled"
   isRecruiting: boolean
   createdAt: Date
   updatedAt: Date
@@ -109,8 +108,8 @@ const ProjectSchema = new Schema(
     ],
     status: {
       type: String,
-      enum: ["active", "completed", "cancelled"],
-      default: "active",
+      enum: ["Active", "Completed", "Cancelled"],
+      default: "Active",
     },
     isRecruiting: {
       type: Boolean,

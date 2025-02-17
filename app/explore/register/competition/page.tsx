@@ -33,7 +33,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, IndianRupee } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
@@ -59,7 +59,7 @@ const stepTwoSchema = z.object({
     required_error: "End date is required",
   }),
   maxTeamSize: z.string().min(1, "Please select maximum team size"),
-  prize: z.string().min(1, "Prize details are required"),
+  prize: z.string(),
 });
 
 const stepThreeSchema = z.object({
@@ -229,10 +229,10 @@ export default function CompetitionRegistrationPage() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="hackathon">Hackathon</SelectItem>
-                      <SelectItem value="ideathon">Ideathon</SelectItem>
-                      <SelectItem value="coding">Coding Competition</SelectItem>
-                      <SelectItem value="design">Design Challenge</SelectItem>
+                      <SelectItem value="Hackathon">Hackathon</SelectItem>
+                      <SelectItem value="Ideathon">Ideathon</SelectItem>
+                      <SelectItem value="Coding">Coding Competition</SelectItem>
+                      <SelectItem value="Design">Design Challenge</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -362,11 +362,14 @@ export default function CompetitionRegistrationPage() {
                 <FormItem>
                   <FormLabel>Prize Details</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="Describe the prizes and rewards..."
-                      className="min-h-[100px]"
-                      {...field}
-                    />
+                    <div className="flex justify-center items-center gap-1">
+                      <IndianRupee size={16} />
+                      <Input
+                        type="number"
+                        placeholder="Prize pool amount (if applicable)"
+                        {...field}
+                      />
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
