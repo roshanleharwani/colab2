@@ -65,7 +65,10 @@ const stepThreeSchema = z.object({
 // Combined schema for the entire form
 const projectFormSchema = stepOneSchema
   .merge(stepTwoSchema)
-  .merge(stepThreeSchema);
+  .merge(stepThreeSchema)
+  .extend({
+    leaderId: z.string().optional() // Add this line
+  });
 
 
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
@@ -77,9 +80,14 @@ export default function ProjectRegistrationPage() {
   const { toast } = useToast();
   const [techStack, setTechStack] = useState<string[]>([]);
 
+  if(!user?._id){
+    router.push("/login");
+  }
+
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectFormSchema),
     defaultValues: {
+      leaderId: user?._id || "",
       name: "",
       description: "",
       category: "",

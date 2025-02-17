@@ -44,6 +44,7 @@ export default function SignInPage() {
       const data=await response.json();
       if (response.ok) {
         setUser(data.user);
+        localStorage.setItem("user", JSON.stringify(data.user._id));
         router.push("/explore");
         toast.success("Logged In");
       } else if (response.status === 401) {

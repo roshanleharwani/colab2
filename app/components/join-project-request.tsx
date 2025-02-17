@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {toast} from "react-hot-toast";
+import useUserStore from "@/store/userStore";
 import {
   Card,
   CardContent,
@@ -25,6 +26,9 @@ interface JoinProjectRequestProps {
     id: string;
     name: string;
     recruiting: boolean;
+    leader: {
+      id: string;
+    };
   };
   isFullyRecruited: boolean;
 }
@@ -33,6 +37,7 @@ export function JoinProjectRequest({
   project,
   isFullyRecruited,
 }: JoinProjectRequestProps) {
+  const { user } = useUserStore();
   const [role, setRole] = useState("");
   const [message, setMessage] = useState("");
   const [isPending, setIsPending] = useState(false);
@@ -51,15 +56,22 @@ export function JoinProjectRequest({
           "Content-Type":"application/json",
         },
         body:JSON.stringify({
+          type:"project",
           projectId:project.id,
           role,
           message,
+          user:user._id,
+          leader:project.leader.id,
         }),
       })
+      if(!response.ok){
+        throw new Error("Failed to send join request");
+      }
       toast.success('your request has been sent to the project leader');
 
       setMessage("");
       setRole("");
+
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error("Failed to send join request. Please try again.");

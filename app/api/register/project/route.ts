@@ -25,6 +25,7 @@ export async function POST(req: Request) {
       techStack: data.techStack,
       githubUrl: data.githubUrl,
       leader: {
+        id:data.leaderId,
         name: data.leaderName,
         email: data.leaderEmail,
         regNumber: data.leaderRegNumber,

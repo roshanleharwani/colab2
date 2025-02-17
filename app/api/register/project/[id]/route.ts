@@ -8,7 +8,7 @@ import User from "@/app/models/User";
 export async function GET(req: NextRequest, context: { params: { id: string } }) {
     console.log("I am here");
     
-    const { id } = context.params; // ❌ No need for await here
+    const { id } = context.params;
     try {
         await connect();
 
