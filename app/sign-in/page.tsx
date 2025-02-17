@@ -9,6 +9,7 @@ import { Code2 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import useUserStore from "@/store/userStore";
 import {
   Card,
   CardContent,
@@ -19,6 +20,7 @@ import {
 } from "@/components/ui/card";
 
 export default function SignInPage() {
+  const {setUser}=useUserStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
@@ -39,7 +41,9 @@ export default function SignInPage() {
           password: password,
         }),
       });
+      const data=await response.json();
       if (response.ok) {
+        setUser(data.user);
         router.push("/explore");
         toast.success("Logged In");
       } else if (response.status === 401) {

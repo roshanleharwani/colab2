@@ -1,3 +1,5 @@
+"use client"
+
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users } from "lucide-react"
@@ -7,15 +9,15 @@ interface ProjectDetailsProps {
     name: string
     description: string
     status: string
-    maxMembers: number
+    teamSize: number
     techStack: string[]
-    recruiting: boolean
+    isRecruiting: boolean
     members: any[]
   }
 }
 
 export function ProjectDetails({ project }: ProjectDetailsProps) {
-  const isFullyRecruited = project.members.length >= project.maxMembers
+  const isFullyRecruited = project.members.length >= project.teamSize
 
   return (
     <Card>
@@ -25,7 +27,7 @@ export function ProjectDetails({ project }: ProjectDetailsProps) {
             <CardTitle className="text-2xl mb-2">{project.name}</CardTitle>
             <div className="flex items-center gap-2">
               <Badge variant={project.status === "In Progress" ? "default" : "secondary"}>{project.status}</Badge>
-              {project.recruiting && !isFullyRecruited ? (
+              {project.isRecruiting && !isFullyRecruited ? (
                 <Badge variant="secondary" className="bg-primary/10 text-primary">
                   Recruiting
                 </Badge>
@@ -39,7 +41,7 @@ export function ProjectDetails({ project }: ProjectDetailsProps) {
           <div className="flex items-center text-muted-foreground">
             <Users className="h-4 w-4 mr-1" />
             <span className="text-sm">
-              {project.members.length}/{project.maxMembers} members
+              {project.members.length}/{project.teamSize} members
             </span>
           </div>
         </div>

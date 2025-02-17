@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import {toast} from "react-hot-toast";
 import {
   Card,
   CardContent,
@@ -17,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
+
 
 interface JoinProjectRequestProps {
   project: {
@@ -35,27 +36,34 @@ export function JoinProjectRequest({
   const [role, setRole] = useState("");
   const [message, setMessage] = useState("");
   const [isPending, setIsPending] = useState(false);
-  const { toast } = useToast();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!project.recruiting || isFullyRecruited) return;
 
     setIsPending(true);
+    
     try {
-      toast({
-        title: "Request sent!",
-        description: `Your request to join ${project.name} has been sent to the project leader.`,
-      });
+      // sending request to the project leader
+      const response=await fetch('/api/join-request',{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+        },
+        body:JSON.stringify({
+          projectId:project.id,
+          role,
+          message,
+        }),
+      })
+      toast.success('your request has been sent to the project leader');
+
       setMessage("");
       setRole("");
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to send join request. Please try again.",
-        variant: "destructive",
-      });
+      toast.error("Failed to send join request. Please try again.");
+      
     } finally {
       setIsPending(false);
     }

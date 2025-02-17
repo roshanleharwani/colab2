@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     await connect()
 
     const data = await req.json()
-
+    console.log(data);
     // Transform tech stack from comma-separated string to array
     if (typeof data.techStack === "string") {
       data.techStack = data.techStack.split(",").map((tech: string) => tech.trim())
@@ -32,6 +32,7 @@ export async function POST(req: Request) {
       requirements: data.requirements,
       isRecruiting: true,
     })
+    console.log('project', project);
 
     return NextResponse.json(
       {
@@ -42,6 +43,8 @@ export async function POST(req: Request) {
     )
   } catch (error: any) {
     // Handle validation errors
+    console.log("I am in the error block")
+    console.log(error.name);
     if (error.name === "ValidationError") {
       const validationErrors = Object.values(error.errors).map((err: any) => err.message)
       return NextResponse.json(

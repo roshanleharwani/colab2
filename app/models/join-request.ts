@@ -5,7 +5,8 @@ export interface IJoinRequest extends Document {
   projectId?: mongoose.Types.ObjectId
   startupId?: mongoose.Types.ObjectId
   teamId?: mongoose.Types.ObjectId
-  userId: mongoose.Types.ObjectId
+  FromUserId: mongoose.Types.ObjectId
+  ToUserId: mongoose.Types.ObjectId
   message: string
   role?: string
   status: "pending" | "accepted" | "rejected"
@@ -41,7 +42,12 @@ const JoinRequestSchema = new Schema(
         return this.type === "team"
       },
     },
-    userId: {
+    FromUserId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: [true, "User ID is required"],
+    },
+    ToUserId:{
       type: Schema.Types.ObjectId,
       ref: "User",
       required: [true, "User ID is required"],

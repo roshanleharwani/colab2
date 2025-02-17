@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
+import useUserStore from "@/store/userStore";
 import {
   Form,
   FormControl,
@@ -66,9 +67,11 @@ const projectFormSchema = stepOneSchema
   .merge(stepTwoSchema)
   .merge(stepThreeSchema);
 
+
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
 
 export default function ProjectRegistrationPage() {
+  const {user,clearUser} = useUserStore();
   const [step, setStep] = useState(1);
   const router = useRouter();
   const { toast } = useToast();
@@ -89,6 +92,7 @@ export default function ProjectRegistrationPage() {
       requirements: "",
       projectType: "",
       githubUrl: "",
+
     },
   });
 
@@ -142,6 +146,7 @@ export default function ProjectRegistrationPage() {
       await handleNext();
     } else {
       try {
+        console.log(data);
         const response = await fetch("/api/register/project", {
           method: "POST",
           headers: {
@@ -149,7 +154,8 @@ export default function ProjectRegistrationPage() {
           },
           body: JSON.stringify(data),
         });
-
+        console.log('after coming from backend');
+        console.log(response);
         if (!response.ok) {
           const errorData = await response.json();
           toast({

@@ -1,5 +1,5 @@
 import mongoose, { Schema, type Document } from "mongoose"
-
+import User from "@/app/models/User"
 export interface IProject extends Document {
   name: string
   description: string
@@ -21,9 +21,21 @@ export interface IProject extends Document {
   createdAt: Date
   updatedAt: Date
 }
+const MemberSchema = new mongoose.Schema({
+  UserId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User", // Reference to the JoinRequest model
+    required: true,
+  },
+  role: {
+    type: String,
+    required: true,
+  },
+});
 
 const ProjectSchema = new Schema(
   {
+
     name: {
       type: String,
       required: [true, "Project name is required"],
@@ -93,10 +105,7 @@ const ProjectSchema = new Schema(
       minlength: [10, "Requirements must be at least 10 characters"],
     },
     members: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-      },
+      MemberSchema
     ],
     status: {
       type: String,

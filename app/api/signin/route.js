@@ -34,7 +34,7 @@ export async function POST(req) {
       }
         const token = generateToken(user);
       // Return success response
-      const response =  NextResponse.json(token,{ message: 'Sign-in successful' }, { status: 200 });
+      const response =  NextResponse.json({token,user, message: 'Sign-in successful' }, { status: 200 });
       
       response.cookies.set('auth-token', token, {
         httpOnly: true,
