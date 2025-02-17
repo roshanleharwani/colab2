@@ -68,11 +68,6 @@ export function Projects() {
     fetchProjects();
   }, []);
 
-  // Debug log for current state
-  console.log("Current projects state:", projects);
-  console.log("Loading state:", isLoading);
-  console.log("Error state:", error);
-
   return (
     <div className="flex flex-col h-full">
       <header className="border-b">
