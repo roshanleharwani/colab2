@@ -18,10 +18,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Search, Users, Briefcase } from "lucide-react";
+import { Search, Users, Briefcase, SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ExploreSidebar } from "@/components/explore/explore-sidebar";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 interface Startup {
   _id: string;
@@ -39,6 +47,7 @@ export function Startups() {
   const [startups, setStartups] = useState<Startup[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   useEffect(() => {
     const fetchStartups = async () => {
@@ -50,7 +59,6 @@ export function Startups() {
         }
         const data = await response.json();
 
-        // Handle different possible response structures
         let startupData: Startup[] = [];
         if (Array.isArray(data)) {
           startupData = data;
@@ -60,22 +68,19 @@ export function Startups() {
           startupData = [data];
         }
 
-        // Validate and format the data
         const validatedData = startupData.map((startup) => ({
           _id: startup._id || `temp-${Math.random()}`,
           name: startup.name || "Untitled Startup",
           tagline: startup.tagline || "",
-          industry: startup.industry || "Uncategorised",
+          industry: startup.industry || "Uncategorized",
           maxTeamSize: startup.maxTeamSize || "Not specified",
           status: startup.isRecruiting ? "Hiring" : "Not Hiring",
           fundingStage: startup.fundingStage || "Not specified",
           isRecruiting: startup.isRecruiting || false,
         }));
 
-        console.log("Validated Data:", validatedData);
         setStartups(validatedData);
       } catch (err) {
-        console.error("Error details:", err);
         setError(
           err instanceof Error ? err.message : "Failed to fetch startups"
         );
@@ -87,41 +92,97 @@ export function Startups() {
     fetchStartups();
   }, []);
 
+  // Filter controls for mobile
+  const FilterControls = () => (
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Category</label>
+        <Select defaultValue="all">
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Category" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Categories</SelectItem>
+            <SelectItem value="education">Education</SelectItem>
+            <SelectItem value="social">Social</SelectItem>
+            <SelectItem value="sustainability">Sustainability</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col min-h-[calc(100vh-4rem)]">
       <header className="border-b">
-        <div className="container flex items-center justify-between gap-4 py-4 px-2">
-          <div className="flex items-center gap-4">
-            <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
-              <Input
-                placeholder="Search startups..."
-                className="w-[300px] pl-8"
-              />
+        <div className="container py-4">
+          {/* Desktop Search and Filters */}
+          <div className="hidden md:flex items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <ExploreSidebar />
+              <div className="relative">
+                <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
+                <Input
+                  placeholder="Search startups..."
+                  className="w-[300px] pl-8"
+                />
+              </div>
+              <Select defaultValue="all">
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  <SelectItem value="education">Education</SelectItem>
+                  <SelectItem value="social">Social</SelectItem>
+                  <SelectItem value="sustainability">Sustainability</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            <Select defaultValue="all">
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                <SelectItem value="education">Education</SelectItem>
-                <SelectItem value="social">Social</SelectItem>
-                <SelectItem value="sustainability">Sustainability</SelectItem>
-              </SelectContent>
-            </Select>
+            <Button onClick={() => router.push("/explore/register/startup")}>
+              List Startup
+            </Button>
           </div>
-          <Button
-            onClick={() => {
-              router.push("/explore/register/startup");
-            }}
-          >
-            List Startup
-          </Button>
+
+          {/* Mobile Search and Filters */}
+          <div className="md:hidden space-y-4">
+            <div className="flex items-center gap-2">
+              <ExploreSidebar />
+              <div className="relative flex-1">
+                <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
+                <Input
+                  placeholder="Search startups..."
+                  className="pl-8 w-full"
+                />
+              </div>
+              <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="icon">
+                    <SlidersHorizontal className="h-4 w-4" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent>
+                  <SheetHeader>
+                    <SheetTitle>Filters</SheetTitle>
+                  </SheetHeader>
+                  <div className="mt-4">
+                    <FilterControls />
+                  </div>
+                </SheetContent>
+              </Sheet>
+              <Button
+                className="whitespace-nowrap"
+                onClick={() => router.push("/explore/register/startup")}
+              >
+                List
+              </Button>
+            </div>
+          </div>
         </div>
       </header>
+
       <main className="flex-1 overflow-auto">
-        <div className="container py-6 px-2">
+        <div className="container py-6">
           {isLoading ? (
             <div className="text-center py-8">Loading startups...</div>
           ) : error ? (
@@ -129,40 +190,45 @@ export function Startups() {
           ) : !startups || startups.length === 0 ? (
             <div className="text-center py-8">No startups found.</div>
           ) : (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
+            <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {startups.map((startup, index) => (
                 <motion.div
-                  key={startup._id || index}
+                  key={startup._id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: index * 0.1 }}
                 >
                   <Link href={`/explore/startups/${startup._id}`}>
-                    <Card className="h-full">
+                    <Card className="h-full hover:shadow-lg transition-shadow">
                       <CardHeader>
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between flex-wrap gap-2">
                           <Badge variant="secondary">
                             {startup.industry.toUpperCase()}
                           </Badge>
                           <Badge>{startup.status}</Badge>
                         </div>
-                        <CardTitle className="mt-4">{startup.name}</CardTitle>
-                        <CardDescription>{startup.tagline}</CardDescription>
+                        <CardTitle className="mt-4 line-clamp-1">
+                          {startup.name}
+                        </CardTitle>
+                        <CardDescription className="line-clamp-2">
+                          {startup.tagline}
+                        </CardDescription>
                       </CardHeader>
                       <CardContent>
                         <div className="flex flex-col gap-4">
                           <div className="grid gap-2 text-sm text-muted-foreground">
                             <div className="flex items-center gap-2">
-                              <Users className="h-4 w-4" />
-                              <span>Team Size: {startup.maxTeamSize}</span>
+                              <Users className="h-4 w-4 flex-shrink-0" />
+                              <span className="truncate">
+                                Team Size: {startup.maxTeamSize}
+                              </span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <Briefcase className="h-4 w-4" />
-                              <span>Funding Stage: {startup.fundingStage}</span>
+                              <Briefcase className="h-4 w-4 flex-shrink-0" />
+                              <span className="truncate">
+                                Funding Stage: {startup.fundingStage}
+                              </span>
                             </div>
-                          </div>
-                          <div className="space-y-2">
-                            <div className="flex flex-wrap gap-2"></div>
                           </div>
                         </div>
                       </CardContent>
@@ -176,4 +242,8 @@ export function Startups() {
       </main>
     </div>
   );
+}
+
+export default function StartupsPage() {
+  return <Startups />;
 }
