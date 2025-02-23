@@ -4,24 +4,35 @@ import connect from "@/lib/connect"
 import { JoinRequest } from "@/app/models/join-request"
 import { request } from "http"
 import User from "@/app/models/User"
+const  mongoose=require("mongoose");
 import { Project } from "@/app/models/project"
 export async function POST(req: Request) {
   try {
     await connect()
-
+    console.log("I am here")
     const data = await req.json()
     console.log("data",data);
     // Create join request with the provided data
+    const existingRequest = await JoinRequest.findOne({
+      FromUserId: data.user,
+      projectId: data.projectId ,
+      status: "pending",
+    });
+
+    if (existingRequest) {
+      console.log("You have already sent a request")
+      return NextResponse.json({ message: "You have already sent a request" }, { status: 400 });
+    }
+    console.log("passed this test")
     const joinRequest = await JoinRequest.create({
       type: data.type,
       projectId: data.type === "project" ? data.projectId : undefined,
-      startupId: data.type === "startup" ? data.projectId : undefined,
-      teamId: data.type === "team" ? data.projectId : undefined,
-      FromUserId: data.user,
+      FromUserId:data.user,
       ToUserId:data.leader,
       message: data.message,
       role: data.role,
     })
+    console.log("joinRequest",joinRequest);
 
     return NextResponse.json(
       {
@@ -32,36 +43,10 @@ export async function POST(req: Request) {
     )
   } catch (error: any) {
     // Handle duplicate request error
-    if (error.code === 11000) {
-      return NextResponse.json(
-        {
-          message: "You have already sent a request that is pending",
-        },
-        { status: 409 },
-      )
-    }
 
     // Handle validation errors
-    if (error.name === "ValidationError") {
-      const validationErrors = Object.values(error.errors).map((err: any) => err.message)
-      return NextResponse.json(
-        {
-          message: "Validation failed",
-          errors: validationErrors,
-        },
-        { status: 400 },
-      )
-    }
-
-    // Handle other errors
-    console.error("Join request error:", error)
-    return NextResponse.json(
-      {
-        message: "Failed to send join request",
-        error: error.message,
-      },
-      { status: 500 },
-    )
+    console.error("Error creating join request:", error)
+    return NextResponse.json({message: "Failed to send join request", error: error.message}, { status: 500 })
   }
 }
 

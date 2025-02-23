@@ -23,6 +23,24 @@ interface JoinRequest {
   role:string;
   createdAt: string;
 }
+const handleAction=async(action:string,requestId:string,fromUser:string)=>{
+  try{
+    const response=await fetch("/api/join-request",{
+      method:"PATCH",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({
+        requestId,
+        status:action,
+        userId:fromUser
+      })
+    })
+    if(!response.ok){
+      throw new Error("Failed while updating reqeust");
+    }
+  }
+}
 
 const NotificationPage = () => {
 
@@ -33,7 +51,6 @@ const NotificationPage = () => {
     if (userItem) {
       const userId = JSON.parse(userItem);
       if (userId.length > 0) {
-        console.log("user id is available")
         setUser(userId);
       }
     }
@@ -43,8 +60,7 @@ const NotificationPage = () => {
 
     const fetchRequests = async () => {
       try {
-        console.log(user);
-        const response = await fetch(`/api/join-request?userId=67b15c87f8dc079eb29e9732`);
+        const response = await fetch(`/api/join-request?userId=${user}`);
         if (!response.ok) {
           throw new Error("Failed to fetch requests");
         }
@@ -59,11 +75,11 @@ const NotificationPage = () => {
     fetchRequests();
 
 
-  }, [])
+  }, [user])
   return (
     <div className="container mx-auto py-8 px-4">
       <h1 className="text-3xl font-bold mb-8">Join Requests</h1>
-      <div className="space-y-4">
+      <div className="space-y-4 flex gap-4">
         {requests.map((request) => (
           <Card key={request._id}>
             <CardHeader>
@@ -88,7 +104,7 @@ const NotificationPage = () => {
               <div className="flex space-x-4">
                 <Button
                   onClick={() => {
-                    // Handle accept request
+                    handleAction("accept", request._id,request.FromUserId);
                   }}
                 >
                   Accept

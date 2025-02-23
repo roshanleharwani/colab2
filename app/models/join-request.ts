@@ -19,28 +19,12 @@ const JoinRequestSchema = new Schema(
     type: {
       type: String,
       required: [true, "Request type is required"],
-      enum: ["project", "startup", "team"],
+      default:"project",
     },
     projectId: {
       type: Schema.Types.ObjectId,
       ref: "Project",
-      required: function (this: IJoinRequest) {
-        return this.type === "project"
-      },
-    },
-    startupId: {
-      type: Schema.Types.ObjectId,
-      ref: "Startup",
-      required: function (this: IJoinRequest) {
-        return this.type === "startup"
-      },
-    },
-    teamId: {
-      type: Schema.Types.ObjectId,
-      ref: "Team",
-      required: function (this: IJoinRequest) {
-        return this.type === "team"
-      },
+      required:true
     },
     FromUserId: {
       type: Schema.Types.ObjectId,
@@ -59,9 +43,7 @@ const JoinRequestSchema = new Schema(
     },
     role: {
       type: String,
-      required: function (this: IJoinRequest) {
-        return this.type === "project" || this.type === "startup"
-      },
+      required: [true, "Role is required"]
     },
     status: {
       type: String,
@@ -74,26 +56,7 @@ const JoinRequestSchema = new Schema(
   },
 )
 
-// Indexes
-JoinRequestSchema.index({ userId: 1, status: 1 })
-JoinRequestSchema.index({ projectId: 1, status: 1 })
-JoinRequestSchema.index({ startupId: 1, status: 1 })
-JoinRequestSchema.index({ teamId: 1, status: 1 })
 
-// Compound index to prevent duplicate requests
-JoinRequestSchema.index(
-  {
-    userId: 1,
-    projectId: 1,
-    startupId: 1,
-    teamId: 1,
-    status: 1,
-  },
-  {
-    unique: true,
-    partialFilterExpression: { status: "pending" },
-  },
-)
 
 export const JoinRequest = mongoose.models.JoinRequest || mongoose.model<IJoinRequest>("JoinRequest", JoinRequestSchema)
 

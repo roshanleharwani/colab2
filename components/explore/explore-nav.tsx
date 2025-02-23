@@ -48,6 +48,7 @@ export function ExploreNav() {
       },
     });
     if (response.ok) {
+      localStorage.removeItem("user");
       toast.success("Logged out");
       router.push("/");
     } else {
