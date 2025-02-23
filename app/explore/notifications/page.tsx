@@ -39,6 +39,9 @@ const handleAction=async(action:string,requestId:string,fromUser:string)=>{
     if(!response.ok){
       throw new Error("Failed while updating reqeust");
     }
+    toast.success(`Request ${action}ed successfully`);
+  }catch(error){
+    toast.error("Failed to update request");
   }
 }
 
