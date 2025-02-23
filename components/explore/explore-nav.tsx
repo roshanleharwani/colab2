@@ -1,6 +1,14 @@
 "use client";
 
-import { LogOut, Trophy, Rocket, FolderGit2, Search, Bell } from "lucide-react";
+import {
+  LogOut,
+  Trophy,
+  Rocket,
+  FolderGit2,
+  Search,
+  Bell,
+  Lightbulb,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 import {
   Sidebar,
@@ -34,6 +42,11 @@ const menuItems = [
     title: "Notifications",
     icon: Bell,
     href: "/explore/notifications",
+  },
+  {
+    title: "Ideas",
+    icon: Lightbulb,
+    href: "/explore/ideas",
   },
 ];
 import { toast } from "react-hot-toast";

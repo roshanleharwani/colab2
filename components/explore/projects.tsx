@@ -94,7 +94,7 @@ export function Projects() {
   );
 
   return (
-    <div className="flex flex-col min-h-[calc(100vh-4rem)]">
+    <div className="flex flex-col min-h-[calc(100vh-4rem)] px-2">
       <header className="border-b">
         <div className="container py-4">
           {/* Desktop Search and Filters */}
@@ -171,7 +171,7 @@ export function Projects() {
           ) : !projects || projects.length === 0 ? (
             <div className="text-center py-8">No projects found.</div>
           ) : (
-            <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-2">
               {projects.map((project, index) => (
                 <motion.div
                   key={project?._id || index}
