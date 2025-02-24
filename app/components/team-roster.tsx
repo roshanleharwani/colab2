@@ -4,10 +4,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
+interface user{
+  _id:string,
+  name:string,
+  registration_number:string
+}
+
 interface TeamMembers {
-  _id:string
-  name:string
-  regNumber: string
+  user:user
   role: string
 }
 interface TeamMember{
@@ -56,7 +60,7 @@ export function TeamRoster({ leader, members }: TeamRosterProps) {
           <h3 className="text-sm font-medium text-muted-foreground mb-4">Team Members</h3>
           <div className="space-y-4">
             {members.map((member) => (
-              <TooltipProvider key={member._id}>
+              <TooltipProvider key={member.user._id}>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="flex items-center space-x-4 p-4 rounded-lg hover:bg-muted/50 transition-colors">
@@ -64,9 +68,9 @@ export function TeamRoster({ leader, members }: TeamRosterProps) {
                         <AvatarFallback>{member.name[0]}</AvatarFallback>
                       </Avatar> */}
                       <div className="flex-1">
-                        <div className="font-medium">{member.name}</div>
+                        <div className="font-medium">{member.user.name}</div>
                         <div className="text-sm text-muted-foreground">
-                          {member.role} • {member.regNumber}
+                          {member.role} • {member.user.registration_number}
                         </div>
                       </div>
                     </div>

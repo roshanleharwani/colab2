@@ -23,8 +23,9 @@ export async function GET(req: NextRequest, context: { params: { id: string } })
         let members = [];
         if (project.members.length > 0) {
             for (const member of project.members) {
-                const user = await User.findById(member.id).select("_id name registration_number")
-                const formattedMember={...user,role:member.role}
+                const user = await User.findById(member.UserId).select("_id name registration_number")
+                console.log("User: ", user);
+                const formattedMember={user,role:member.role}
                 members.push(formattedMember);
             }
         }

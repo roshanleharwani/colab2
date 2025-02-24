@@ -15,7 +15,7 @@ export interface IProject extends Document {
   }
   requirements: string
   members: mongoose.Types.ObjectId[]
-  status: "Active" | "Completed" | "Cancelled"
+  status: "active" | "completed" | "cancelled"
   isRecruiting: boolean
   createdAt: Date
   updatedAt: Date
@@ -113,8 +113,8 @@ const ProjectSchema = new Schema(
     ],
     status: {
       type: String,
-      enum: ["Active", "Completed", "Cancelled"],
-      default: "Active",
+      enum: ["active", "completed", "cancelled"],
+      default: "active",
     },
     isRecruiting: {
       type: Boolean,

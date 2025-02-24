@@ -3,7 +3,7 @@ import { NextResponse } from "next/server"
 import connect from "@/lib/connect"
 import { JoinRequest } from "@/app/models/join-request"
 import { request } from "http"
-import {User} from "@/app/models/User"
+import User from "@/app/models/User"
 const  mongoose=require("mongoose");
 import { Project } from "@/app/models/project"
 export async function POST(req: Request) {
@@ -85,14 +85,26 @@ export async function PATCH(req:Request){
   try{
     await connect();
     const request=await JoinRequest.findById(data.requestId);
+    console.log(request);
     if(!request){
       return NextResponse.json({message:"Request not found"},{status:404});
     }
     if(request.status!=="pending"){
       return NextResponse.json({message:"Request has already been processed"},{status:400});
     }
-    request.status=data.action;
+    request.set("status",data.status); 
     await request.save();
+    if(data.status==="accept"){
+      const project=await Project.findById(request.projectId);
+      const newMember={
+        UserId:request.FromUserId,
+        role:request.role
+      }
+      console.log("newMember",newMember);
+      project.members.push(newMember)
+      await project.save();
+      console.log(project)
+    }
     return NextResponse.json({message:"Request updated successfully"},{status:200});
   }catch(error:any){
     console.error("Error updating request:",error);

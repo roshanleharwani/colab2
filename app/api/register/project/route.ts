@@ -32,6 +32,7 @@ export async function POST(req: Request) {
       },
       requirements: data.requirements,
       isRecruiting: true,
+      status:"active"
     })
     console.log('project', project);
 
@@ -46,26 +47,13 @@ export async function POST(req: Request) {
     // Handle validation errors
     console.log("I am in the error block")
     console.log(error.name);
-    if (error.name === "ValidationError") {
-      const validationErrors = Object.values(error.errors).map((err: any) => err.message)
-      return NextResponse.json(
-        {
-          message: "Validation failed",
-          errors: validationErrors,
-        },
-        { status: 400 },
-      )
-    }
-
-    // Handle other errors
-    console.error("Project registration error:", error)
+    console.error("Error registering project:", error)
     return NextResponse.json(
       {
         message: "Failed to register project",
         error: error.message,
       },
-      { status: 500 },
-    )
+      { status: 500 },)
   }
 }
 
