@@ -1,35 +1,65 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
 import useUserStore from "@/store/userStore";
-import {toast} from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import { join } from "path";
+import { ExploreSidebar } from "@/components/explore/explore-sidebar";
+
 // This would come from your database
-interface project{
+interface project {
   _id: string;
   name: string;
 }
-interface User{
-  _id:string;
-  name:string;
+interface User {
+  _id: string;
+  name: string;
 }
 interface JoinRequest {
   _id: string;
-  projectId:project;
-  FromUserId:User;
-  message:string;
-  role:string;
+  projectId: project;
+  FromUserId: User;
+  message: string;
+  role: string;
   createdAt: string;
 }
+<<<<<<< HEAD
 
+=======
+const handleAction = async (
+  action: string,
+  requestId: string,
+  fromUser: string
+) => {
+  try {
+    const response = await fetch("/api/join-request", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        requestId,
+        status: action,
+        userId: fromUser,
+      }),
+    });
+    if (!response.ok) {
+      throw new Error("Failed while updating reqeust");
+    }
+    toast.success(`Request ${action}ed successfully`);
+  } catch (error) {
+    toast.error("Failed to update request");
+  }
+};
+>>>>>>> 56a9d424dae3bd61e4a97255e2cf20835a5db425
 
 const NotificationPage = () => {
-
-  const [user,setUser]=useState("");
+  const [user, setUser] = useState("");
   const [requests, setRequests] = useState<JoinRequest[]>([]);
-  useEffect(()=>{
+  useEffect(() => {
     const userItem = localStorage.getItem("user");
     if (userItem) {
       const userId = JSON.parse(userItem);
@@ -37,6 +67,7 @@ const NotificationPage = () => {
         setUser(userId);
       }
     }
+<<<<<<< HEAD
   },[])
   const handleAction=async(action:string,requestId:string,fromUser:string)=>{
     try{
@@ -60,9 +91,11 @@ const NotificationPage = () => {
       toast.error("Failed to update request");
     }
   }
+=======
+  }, []);
+>>>>>>> 56a9d424dae3bd61e4a97255e2cf20835a5db425
 
   useEffect(() => {
-
     const fetchRequests = async () => {
       try {
         const response = await fetch(`/api/join-request?userId=${user}`);
@@ -71,16 +104,12 @@ const NotificationPage = () => {
         }
         const data = await response.json();
         setRequests(data);
-      }catch(error){
+      } catch (error) {
         toast.error("Failed to fetch requests");
       }
-      
-
-    }
+    };
     fetchRequests();
-
-
-  }, [user])
+  }, [user]);
   return (
     <div className="container mx-auto py-8 px-4">
       <h1 className="text-3xl font-bold mb-8">Join Requests</h1>
@@ -95,7 +124,6 @@ const NotificationPage = () => {
             <CardContent>
               <div className="flex items-center space-x-4 mb-4">
                 <Avatar>
-
                   <AvatarFallback>{request.FromUserId.name[0]}</AvatarFallback>
                 </Avatar>
                 <div>
@@ -109,7 +137,11 @@ const NotificationPage = () => {
               <div className="flex space-x-4">
                 <Button
                   onClick={() => {
+<<<<<<< HEAD
                     handleAction("accept", request._id,request.FromUserId._id);
+=======
+                    handleAction("accept", request._id, request.FromUserId);
+>>>>>>> 56a9d424dae3bd61e4a97255e2cf20835a5db425
                   }}
                 >
                   Accept
@@ -129,6 +161,6 @@ const NotificationPage = () => {
       </div>
     </div>
   );
-}
+};
 
 export default NotificationPage;

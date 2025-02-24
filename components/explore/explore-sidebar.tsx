@@ -3,7 +3,14 @@
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import {
+  Menu,
+  Trophy,
+  Rocket,
+  FolderGit2,
+  Bell,
+  Lightbulb,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -11,15 +18,28 @@ import { cn } from "@/lib/utils";
 const navigationLinks = [
   {
     title: "Projects",
-    href: "/explore/",
-  },
-  {
-    title: "Startups",
-    href: "/explore/startups",
+    icon: FolderGit2,
+    href: "/explore",
   },
   {
     title: "Competitions",
+    icon: Trophy,
     href: "/explore/competitions",
+  },
+  {
+    title: "Startups",
+    icon: Rocket,
+    href: "/explore/startups",
+  },
+  {
+    title: "Notifications",
+    icon: Bell,
+    href: "/explore/notifications",
+  },
+  {
+    title: "Ideas",
+    icon: Lightbulb,
+    href: "/explore/ideas",
   },
 ];
 
@@ -43,12 +63,13 @@ export function ExploreSidebar() {
               href={link.href}
               onClick={() => setOpen(false)}
               className={cn(
-                "px-4 py-2 rounded-md hover:bg-muted transition-colors",
+                "px-4 py-2 flex items-center gap-2 rounded-md hover:bg-muted transition-colors",
                 pathname === link.href
                   ? "bg-muted font-medium"
                   : "text-muted-foreground"
               )}
             >
+              <link.icon className="h-4 w-4" />
               {link.title}
             </Link>
           ))}

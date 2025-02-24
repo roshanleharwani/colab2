@@ -113,7 +113,7 @@ export function Startups() {
   );
 
   return (
-    <div className="flex flex-col min-h-[calc(100vh-4rem)]">
+    <div className="flex flex-col min-h-[calc(100vh-4rem)] px-2">
       <header className="border-b">
         <div className="container py-4">
           {/* Desktop Search and Filters */}
@@ -190,7 +190,7 @@ export function Startups() {
           ) : !startups || startups.length === 0 ? (
             <div className="text-center py-8">No startups found.</div>
           ) : (
-            <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-2">
               {startups.map((startup, index) => (
                 <motion.div
                   key={startup._id}
