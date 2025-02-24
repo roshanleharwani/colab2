@@ -47,7 +47,7 @@ const JoinRequestSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "accepted", "rejected"],
+      enum: ["pending", "accept", "reject"],
       default: "pending",
     },
   },

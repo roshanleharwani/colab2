@@ -3,7 +3,7 @@ import { NextResponse } from "next/server"
 import connect from "@/lib/connect"
 import { JoinRequest } from "@/app/models/join-request"
 import { request } from "http"
-import User from "@/app/models/User"
+import {User} from "@/app/models/User"
 const  mongoose=require("mongoose");
 import { Project } from "@/app/models/project"
 export async function POST(req: Request) {
@@ -62,7 +62,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ message: "User ID is required" }, { status: 400 })
     }
 
-    const requests = await JoinRequest.find({ ToUserId:userId, status:"pending" }).select("FromUserId projectId role message createdAt _id").populate("FromUserId","name").populate("projectId","name")
+    const requests = await JoinRequest.find({ ToUserId:userId, status:"pending" }).select(" _id FromUserId projectId role message createdAt").populate("FromUserId","name").populate("projectId","name")
     console.log(requests);
 
 
@@ -79,43 +79,23 @@ export async function GET(req: Request) {
   }
 }
 
-export async function PATCH(req: Request) {
-  try {
-    await connect()
-
-    const data = await req.json()
-    const { requestId, status, userId } = data
-
-    if (!requestId || !status || !userId) {
-      return NextResponse.json({ message: "Request ID, status, and user ID are required" }, { status: 400 })
+export async function PATCH(req:Request){
+  const data=await req.json();
+  console.log("data",data);
+  try{
+    await connect();
+    const request=await JoinRequest.findById(data.requestId);
+    if(!request){
+      return NextResponse.json({message:"Request not found"},{status:404});
     }
-
-    const joinRequest = await JoinRequest.findOneAndUpdate({ _id: requestId }, { status }, { new: true })
-
-    if (!joinRequest) {
-      return NextResponse.json({ message: "Join request not found" }, { status: 404 })
+    if(request.status!=="pending"){
+      return NextResponse.json({message:"Request has already been processed"},{status:400});
     }
-
-    // If request is accepted, add user to the respective team/project/startup
-    if (status === "accepted") {
-      // Handle adding user to the team/project/startup
-      // This would require additional logic based on your requirements
-    }
-
-    return NextResponse.json({
-      message: `Join request ${status}`,
-      joinRequest,
-    })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    console.error("Error updating join request:", error)
-    return NextResponse.json(
-      {
-        message: "Failed to update join request",
-        error: error.message,
-      },
-      { status: 500 },
-    )
+    request.status=data.action;
+    await request.save();
+    return NextResponse.json({message:"Request updated successfully"},{status:200});
+  }catch(error:any){
+    console.error("Error updating request:",error);
+    return NextResponse.json({message:"Failed to update request",error:error.message},{status:500});
   }
 }
-

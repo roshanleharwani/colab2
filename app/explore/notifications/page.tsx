@@ -23,27 +23,7 @@ interface JoinRequest {
   role:string;
   createdAt: string;
 }
-const handleAction=async(action:string,requestId:string,fromUser:string)=>{
-  try{
-    const response=await fetch("/api/join-request",{
-      method:"PATCH",
-      headers:{
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify({
-        requestId,
-        status:action,
-        userId:fromUser
-      })
-    })
-    if(!response.ok){
-      throw new Error("Failed while updating reqeust");
-    }
-    toast.success(`Request ${action}ed successfully`);
-  }catch(error){
-    toast.error("Failed to update request");
-  }
-}
+
 
 const NotificationPage = () => {
 
@@ -58,6 +38,28 @@ const NotificationPage = () => {
       }
     }
   },[])
+  const handleAction=async(action:string,requestId:string,fromUser:string)=>{
+    try{
+      const response=await fetch("/api/join-request",{
+        method:"PATCH",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          requestId:requestId,
+          action:action,
+          userId:fromUser
+        })
+      })
+      if(!response.ok){
+        throw new Error("Failed to update reqeust");
+      }
+      toast.success(`Request ${action}ed successfully`);
+      setRequests((prevRequests) => prevRequests.filter((req) => req._id !== requestId));
+    }catch(error){
+      toast.error("Failed to update request");
+    }
+  }
 
   useEffect(() => {
 
@@ -107,7 +109,7 @@ const NotificationPage = () => {
               <div className="flex space-x-4">
                 <Button
                   onClick={() => {
-                    handleAction("accept", request._id,request.FromUserId);
+                    handleAction("accept", request._id,request.FromUserId._id);
                   }}
                 >
                   Accept
@@ -115,7 +117,7 @@ const NotificationPage = () => {
                 <Button
                   variant="outline"
                   onClick={() => {
-                    // Handle reject request
+                    handleAction("reject", request._id,request.FromUserId._id);
                   }}
                 >
                   Decline
