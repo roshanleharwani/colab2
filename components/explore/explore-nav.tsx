@@ -43,11 +43,6 @@ const menuItems = [
     icon: Bell,
     href: "/explore/notifications",
   },
-  {
-    title: "Ideas",
-    icon: Lightbulb,
-    href: "/explore/ideas",
-  },
 ];
 import { toast } from "react-hot-toast";
 export function ExploreNav() {

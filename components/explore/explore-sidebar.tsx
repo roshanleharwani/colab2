@@ -3,14 +3,7 @@
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import {
-  Menu,
-  Trophy,
-  Rocket,
-  FolderGit2,
-  Bell,
-  Lightbulb,
-} from "lucide-react";
+import { Menu, Trophy, Rocket, FolderGit2, Bell } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -35,11 +28,6 @@ const navigationLinks = [
     title: "Notifications",
     icon: Bell,
     href: "/explore/notifications",
-  },
-  {
-    title: "Ideas",
-    icon: Lightbulb,
-    href: "/explore/ideas",
   },
 ];
 
