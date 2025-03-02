@@ -22,7 +22,6 @@ import { Search, Users, Briefcase, SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ExploreSidebar } from "@/components/explore/explore-sidebar";
 import {
   Sheet,
   SheetContent,
@@ -31,6 +30,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import Image from "next/image";
+import { ExploreSidebar } from "@/components/explore/explore-sidebar";
 
 interface Startup {
   _id: string;
@@ -46,9 +46,12 @@ interface Startup {
 export function Startups() {
   const router = useRouter();
   const [startups, setStartups] = useState<Startup[]>([]);
+  const [filteredStartups, setFilteredStartups] = useState<Startup[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedIndustry, setSelectedIndustry] = useState("all");
 
   useEffect(() => {
     const fetchStartups = async () => {
@@ -81,6 +84,7 @@ export function Startups() {
         }));
 
         setStartups(validatedData);
+        setFilteredStartups(validatedData);
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "Failed to fetch startups"
@@ -93,20 +97,48 @@ export function Startups() {
     fetchStartups();
   }, []);
 
-  // Filter controls for mobile
+  // Filter startups based on search query and industry
+  useEffect(() => {
+    let filtered = [...startups];
+
+    // Apply search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (startup) =>
+          startup.name.toLowerCase().includes(query) ||
+          startup.tagline.toLowerCase().includes(query) ||
+          startup.industry.toLowerCase().includes(query)
+      );
+    }
+
+    // Apply industry filter
+    if (selectedIndustry !== "all") {
+      filtered = filtered.filter(
+        (startup) => startup.industry === selectedIndustry
+      );
+    }
+
+    setFilteredStartups(filtered);
+  }, [searchQuery, selectedIndustry, startups]);
+
   const FilterControls = () => (
     <div className="space-y-4">
       <div className="space-y-2">
-        <label className="text-sm font-medium">Category</label>
-        <Select defaultValue="all">
+        <label className="text-sm font-medium">Industry</label>
+        <Select value={selectedIndustry} onValueChange={setSelectedIndustry}>
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Category" />
+            <SelectValue placeholder="Select industry" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Categories</SelectItem>
-            <SelectItem value="education">Education</SelectItem>
-            <SelectItem value="social">Social</SelectItem>
+            <SelectItem value="all">All Industries</SelectItem>
+            <SelectItem value="tech">Technology</SelectItem>
+            <SelectItem value="health">Healthcare</SelectItem>
+            <SelectItem value="edu">Education</SelectItem>
+            <SelectItem value="finance">Finance</SelectItem>
+            <SelectItem value="ecommerce">E-Commerce</SelectItem>
             <SelectItem value="sustainability">Sustainability</SelectItem>
+            <SelectItem value="other">Other</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -114,29 +146,37 @@ export function Startups() {
   );
 
   return (
-    <div className="flex flex-col min-h-[calc(100vh-4rem)] px-2">
+    <div className="flex flex-col h-full m-2">
       <header className="border-b">
         <div className="container py-4">
           {/* Desktop Search and Filters */}
           <div className="hidden md:flex items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <ExploreSidebar />
               <div className="relative">
                 <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
                 <Input
                   placeholder="Search startups..."
                   className="w-[300px] pl-8"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <Select defaultValue="all">
+              <Select
+                value={selectedIndustry}
+                onValueChange={setSelectedIndustry}
+              >
                 <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Category" />
+                  <SelectValue placeholder="Industry" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
-                  <SelectItem value="education">Education</SelectItem>
-                  <SelectItem value="social">Social</SelectItem>
+                  <SelectItem value="all">All Industries</SelectItem>
+                  <SelectItem value="tech">Technology</SelectItem>
+                  <SelectItem value="health">Healthcare</SelectItem>
+                  <SelectItem value="edu">Education</SelectItem>
+                  <SelectItem value="finance">Finance</SelectItem>
+                  <SelectItem value="ecommerce">E-Commerce</SelectItem>
                   <SelectItem value="sustainability">Sustainability</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -154,6 +194,8 @@ export function Startups() {
                 <Input
                   placeholder="Search startups..."
                   className="pl-8 w-full"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
               <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
@@ -182,26 +224,30 @@ export function Startups() {
         </div>
       </header>
 
-      <main className="flex-1 overflow-auto h-full">
-        <div className="container py-6 h-full">
+      <main className="flex-1 overflow-auto">
+        <div className="container py-6">
           {isLoading ? (
             <div className="text-center py-8">Loading startups...</div>
           ) : error ? (
             <div className="text-center py-8 text-red-500">Error: {error}</div>
-          ) : !startups || startups.length === 0 ? (
-            <div className="text-center py-8 flex justify-center items-center flex-col h-full w-full">
+          ) : !filteredStartups || filteredStartups.length === 0 ? (
+            <div className="text-center py-8 flex justify-center items-center flex-col">
               <Image
                 src="/startup.gif"
-                alt="No Startups found"
-                className="w-3/4 md:w-1/3"
-                width={100}
-                height={100}
+                alt="No startups found"
+                className="w-3/4 md:w-1/3 mb-4"
+                width={300}
+                height={300}
               />
-              No Startups found.
+              <p className="text-muted-foreground">
+                {searchQuery || selectedIndustry !== "all"
+                  ? "No startups match your search criteria."
+                  : "No startups found."}
+              </p>
             </div>
           ) : (
-            <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-2">
-              {startups.map((startup, index) => (
+            <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {filteredStartups.map((startup, index) => (
                 <motion.div
                   key={startup._id}
                   initial={{ opacity: 0, y: 20 }}

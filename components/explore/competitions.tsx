@@ -1,5 +1,5 @@
 "use client";
-import Image from "next/image";
+
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,7 +29,6 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ExploreSidebar } from "@/components/explore/explore-sidebar";
 import {
   Sheet,
   SheetContent,
@@ -37,6 +36,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import Image from "next/image";
+import { ExploreSidebar } from "@/components/explore/explore-sidebar";
+
 interface Competition {
   _id: string;
   description: string;
@@ -51,13 +53,18 @@ interface Competition {
 
 export function Competitions() {
   const router = useRouter();
-  const [competition, setCompetition] = useState<Competition[]>([]);
+  const [competitions, setCompetitions] = useState<Competition[]>([]);
+  const [filteredCompetitions, setFilteredCompetitions] = useState<
+    Competition[]
+  >([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedType, setSelectedType] = useState("all");
 
   useEffect(() => {
-    const fetchCompetition = async () => {
+    const fetchCompetitions = async () => {
       try {
         setIsLoading(true);
         const response = await fetch("/api/register/competition");
@@ -86,7 +93,8 @@ export function Competitions() {
           endDate: competition.endDate || "",
         }));
 
-        setCompetition(validatedData);
+        setCompetitions(validatedData);
+        setFilteredCompetitions(validatedData);
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "Failed to fetch competitions"
@@ -96,23 +104,48 @@ export function Competitions() {
       }
     };
 
-    fetchCompetition();
+    fetchCompetitions();
   }, []);
 
-  // Filter controls for mobile
+  // Filter competitions based on search query and type
+  useEffect(() => {
+    let filtered = [...competitions];
+
+    // Apply search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (competition) =>
+          competition.name.toLowerCase().includes(query) ||
+          competition.description.toLowerCase().includes(query) ||
+          competition.type.toLowerCase().includes(query)
+      );
+    }
+
+    // Apply type filter
+    if (selectedType !== "all") {
+      filtered = filtered.filter(
+        (competition) => competition.type === selectedType
+      );
+    }
+
+    setFilteredCompetitions(filtered);
+  }, [searchQuery, selectedType, competitions]);
+
   const FilterControls = () => (
     <div className="space-y-4">
       <div className="space-y-2">
-        <label className="text-sm font-medium">Category</label>
-        <Select defaultValue="all">
+        <label className="text-sm font-medium">Type</label>
+        <Select value={selectedType} onValueChange={setSelectedType}>
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Category" />
+            <SelectValue placeholder="Select type" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Categories</SelectItem>
+            <SelectItem value="all">All Types</SelectItem>
             <SelectItem value="hackathon">Hackathons</SelectItem>
-            <SelectItem value="ai">AI Competitions</SelectItem>
-            <SelectItem value="pitch">Pitch Competitions</SelectItem>
+            <SelectItem value="ideathon">Ideathons</SelectItem>
+            <SelectItem value="coding">Coding Competitions</SelectItem>
+            <SelectItem value="design">Design Challenges</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -120,29 +153,31 @@ export function Competitions() {
   );
 
   return (
-    <div className="flex flex-col min-h-[calc(100vh-4rem)] px-2">
+    <div className="flex flex-col h-full m-2">
       <header className="border-b">
-        <div className="container py-4 ">
+        <div className="container py-4">
           {/* Desktop Search and Filters */}
           <div className="hidden md:flex items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <ExploreSidebar />
               <div className="relative">
                 <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
                 <Input
                   placeholder="Search competitions..."
                   className="w-[300px] pl-8"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <Select defaultValue="all">
+              <Select value={selectedType} onValueChange={setSelectedType}>
                 <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Category" />
+                  <SelectValue placeholder="Type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
+                  <SelectItem value="all">All Types</SelectItem>
                   <SelectItem value="hackathon">Hackathons</SelectItem>
-                  <SelectItem value="ai">AI Competitions</SelectItem>
-                  <SelectItem value="pitch">Pitch Competitions</SelectItem>
+                  <SelectItem value="ideathon">Ideathons</SelectItem>
+                  <SelectItem value="coding">Coding Competitions</SelectItem>
+                  <SelectItem value="design">Design Challenges</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -161,7 +196,9 @@ export function Competitions() {
                 <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
                 <Input
                   placeholder="Search competitions..."
-                  className="pl-8 w-full"
+                  className="pl-8 w-full sm:placeholder:text-sm"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
               <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
@@ -191,25 +228,29 @@ export function Competitions() {
       </header>
 
       <main className="flex-1 overflow-auto">
-        <div className="container py-6 h-full">
+        <div className="container py-6">
           {isLoading ? (
             <div className="text-center py-8">Loading competitions...</div>
           ) : error ? (
             <div className="text-center py-8 text-red-500">Error: {error}</div>
-          ) : !competition || competition.length === 0 ? (
-            <div className="text-center py-8 flex justify-center items-center flex-col h-full w-full">
+          ) : !filteredCompetitions || filteredCompetitions.length === 0 ? (
+            <div className="text-center py-8 flex justify-center items-center flex-col">
               <Image
                 src="/competition.gif"
                 alt="No competitions found"
-                className="w-full md:w-1/3"
-                width={100}
-                height={100}
+                className="w-3/4 md:w-1/3 mb-4"
+                width={300}
+                height={300}
               />
-              No competitions found.
+              <p className="text-muted-foreground">
+                {searchQuery || selectedType !== "all"
+                  ? "No competitions match your search criteria."
+                  : "No competitions found."}
+              </p>
             </div>
           ) : (
-            <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-2">
-              {competition.map((competition, index) => (
+            <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {filteredCompetitions.map((competition, index) => (
                 <motion.div
                   key={competition._id}
                   initial={{ opacity: 0, y: 20 }}
