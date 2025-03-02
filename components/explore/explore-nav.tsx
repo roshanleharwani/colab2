@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  LogOut,
-  Trophy,
-  Rocket,
-  FolderGit2,
-  Search,
-  Bell,
-  Lightbulb,
-} from "lucide-react";
+import { LogOut, Trophy, Rocket, FolderGit2, Search, Bell } from "lucide-react";
 import { usePathname } from "next/navigation";
 import {
   Sidebar,

@@ -9,9 +9,9 @@ export default function ExploreLayout({
 }) {
   return (
     <SidebarProvider defaultOpen={true}>
-      <div className="flex min-h-screen">
+      <div className="flex min-h-screen w-full">
         <ExploreNav />
-        <SidebarInset className="flex-1 ">{children}</SidebarInset>
+        <SidebarInset className="flex-1   ">{children}</SidebarInset>
       </div>
     </SidebarProvider>
   );
