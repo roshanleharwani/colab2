@@ -75,6 +75,15 @@ export function ExploreNav() {
                     ? pathname === "/explore"
                     : pathname.startsWith(item.href)
                 }
+                className={`${
+                  (
+                    item.href === "/explore"
+                      ? pathname === "/explore"
+                      : pathname.startsWith(item.href)
+                  )
+                    ? "bg-black text-white"
+                    : ""
+                }`}
               >
                 <Link href={item.href}>
                   <item.icon className="h-4 w-4" />

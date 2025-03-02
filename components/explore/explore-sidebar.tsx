@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu, Trophy, Rocket, FolderGit2, Bell } from "lucide-react";
 import Link from "next/link";
@@ -44,6 +49,7 @@ export function ExploreSidebar() {
         </Button>
       </SheetTrigger>
       <SheetContent side="left">
+        <SheetTitle>Navigation</SheetTitle>
         <nav className="flex flex-col gap-4 mt-8">
           {navigationLinks.map((link) => (
             <Link
