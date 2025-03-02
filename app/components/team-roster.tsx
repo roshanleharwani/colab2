@@ -1,31 +1,34 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-interface user{
-  _id:string,
-  name:string,
-  registration_number:string
+interface user {
+  _id: string;
+  name: string;
+  registration_number: string;
 }
 
 interface TeamMembers {
-  user:user
-  role: string
+  user: user;
+  role: string;
 }
-interface TeamMember{
-  name:string,
-  email:string,
-  regNumber:string,
-  role:string
+interface TeamMember {
+  name: string;
+  email: string;
+  regNumber: string;
+  role: string;
 }
 
 interface TeamRosterProps {
-  leader: TeamMember
-  members: TeamMembers[]
+  leader: TeamMember;
+  members: TeamMembers[];
 }
-
+import { v4 as uuidv4 } from "uuid";
 export function TeamRoster({ leader, members }: TeamRosterProps) {
   return (
     <Card>
@@ -35,7 +38,9 @@ export function TeamRoster({ leader, members }: TeamRosterProps) {
       <CardContent className="space-y-8">
         {/* Team Leader Section */}
         <div>
-          <h3 className="text-sm font-medium text-muted-foreground mb-4">Team Leader</h3>
+          <h3 className="text-sm font-medium text-muted-foreground mb-4">
+            Team Leader
+          </h3>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -57,10 +62,12 @@ export function TeamRoster({ leader, members }: TeamRosterProps) {
 
         {/* Team Members Section */}
         <div>
-          <h3 className="text-sm font-medium text-muted-foreground mb-4">Team Members</h3>
+          <h3 className="text-sm font-medium text-muted-foreground mb-4">
+            Team Members
+          </h3>
           <div className="space-y-4">
             {members.map((member) => (
-              <TooltipProvider key={member.user._id}>
+              <TooltipProvider key={uuidv4()}>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="flex items-center space-x-4 p-4 rounded-lg hover:bg-muted/50 transition-colors">
@@ -82,6 +89,5 @@ export function TeamRoster({ leader, members }: TeamRosterProps) {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
-

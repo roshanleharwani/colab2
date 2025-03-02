@@ -30,6 +30,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import Image from "next/image";
 
 interface Startup {
   _id: string;
@@ -181,14 +182,23 @@ export function Startups() {
         </div>
       </header>
 
-      <main className="flex-1 overflow-auto">
-        <div className="container py-6">
+      <main className="flex-1 overflow-auto h-full">
+        <div className="container py-6 h-full">
           {isLoading ? (
             <div className="text-center py-8">Loading startups...</div>
           ) : error ? (
             <div className="text-center py-8 text-red-500">Error: {error}</div>
           ) : !startups || startups.length === 0 ? (
-            <div className="text-center py-8">No startups found.</div>
+            <div className="text-center py-8 flex justify-center items-center flex-col h-full w-full">
+              <Image
+                src="/startup.gif"
+                alt="No Startups found"
+                className="w-3/4 md:w-1/3"
+                width={100}
+                height={100}
+              />
+              No Startups found.
+            </div>
           ) : (
             <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-2">
               {startups.map((startup, index) => (

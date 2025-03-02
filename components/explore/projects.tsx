@@ -1,5 +1,4 @@
 "use client";
-
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,6 +30,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import Image from "next/image";
 
 interface Project {
   _id: string;
@@ -163,13 +163,22 @@ export function Projects() {
       </header>
 
       <main className="flex-1 overflow-auto">
-        <div className="container py-6">
+        <div className="container py-6 h-full">
           {isLoading ? (
             <div className="text-center py-8">Loading projects...</div>
           ) : error ? (
             <div className="text-center py-8 text-red-500">Error: {error}</div>
           ) : !projects || projects.length === 0 ? (
-            <div className="text-center py-8">No projects found.</div>
+            <div className="text-center py-8 flex justify-center items-center flex-col h-full w-full">
+              <Image
+                src="/project.gif"
+                alt="No Projects found"
+                className="w-3/4 md:w-1/3"
+                width={100}
+                height={100}
+              />
+              No Projects found.
+            </div>
           ) : (
             <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-2">
               {projects.map((project, index) => (

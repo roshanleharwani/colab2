@@ -1,5 +1,5 @@
 "use client";
-
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,7 +37,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-
 interface Competition {
   _id: string;
   description: string;
@@ -192,13 +191,22 @@ export function Competitions() {
       </header>
 
       <main className="flex-1 overflow-auto">
-        <div className="container py-6">
+        <div className="container py-6 h-full">
           {isLoading ? (
             <div className="text-center py-8">Loading competitions...</div>
           ) : error ? (
             <div className="text-center py-8 text-red-500">Error: {error}</div>
           ) : !competition || competition.length === 0 ? (
-            <div className="text-center py-8">No competitions found.</div>
+            <div className="text-center py-8 flex justify-center items-center flex-col h-full w-full">
+              <Image
+                src="/competition.gif"
+                alt="No competitions found"
+                className="w-full md:w-1/3"
+                width={100}
+                height={100}
+              />
+              No competitions found.
+            </div>
           ) : (
             <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-2">
               {competition.map((competition, index) => (
