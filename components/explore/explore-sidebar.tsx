@@ -8,11 +8,12 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Menu, Trophy, Rocket, FolderGit2, Bell } from "lucide-react";
+import { Menu, Trophy, Rocket, FolderGit2, Bell, LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-
+import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 const navigationLinks = [
   {
     title: "Projects",
@@ -39,7 +40,22 @@ const navigationLinks = [
 export function ExploreSidebar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-
+  const router = useRouter();
+  const handleLogout = async () => {
+    const response = await fetch("/api/signout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.ok) {
+      localStorage.removeItem("user");
+      toast.success("Logged out");
+      router.push("/");
+    } else {
+      toast.error("Failed to logout");
+    }
+  };
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
@@ -49,7 +65,7 @@ export function ExploreSidebar() {
         </Button>
       </SheetTrigger>
       <SheetContent side="left">
-        <SheetTitle>Navigation</SheetTitle>
+        <SheetTitle>Explore</SheetTitle>
         <nav className="flex flex-col gap-4 mt-8">
           {navigationLinks.map((link) => (
             <Link
@@ -63,10 +79,19 @@ export function ExploreSidebar() {
                   : "text-muted-foreground"
               )}
             >
-              <link.icon className="h-4 w-4" />
+              <link.icon className="h-4 w-4 text-black" />
               {link.title}
             </Link>
           ))}
+          <SheetTrigger
+            className="text-white rounded-md  hover:text-red-600 hover:bg-red-50 flex items-center gap-4 mx-5 justify-center py-2  mt-10 bg-red-500"
+            onClick={() => {
+              handleLogout();
+            }}
+          >
+            <LogOut className="h-4 w-4" />
+            <span>Logout</span>
+          </SheetTrigger>
         </nav>
       </SheetContent>
     </Sheet>
