@@ -8,7 +8,8 @@ import useUserStore from "@/store/userStore";
 import { toast } from "react-hot-toast";
 import { join } from "path";
 import { ExploreSidebar } from "@/components/explore/explore-sidebar";
-
+import { BellPlusIcon } from "lucide-react";
+import Image from "next/image";
 // This would come from your database
 interface project {
   _id: string;
@@ -81,49 +82,76 @@ const NotificationPage = () => {
     fetchRequests();
   }, [user]);
   return (
-    <div className="container mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold mb-8">Join Requests</h1>
-      <div className="space-y-4 flex gap-4">
-        {requests.map((request) => (
-          <Card key={request._id}>
-            <CardHeader>
-              <CardTitle className="text-lg">
-                Request to join {request.projectId.name}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center space-x-4 mb-4">
-                <Avatar>
-                  <AvatarFallback>{request.FromUserId.name[0]}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <div className="font-medium">{request.FromUserId.name}</div>
-                  <div className="text-sm text-muted-foreground">
-                    {new Date(request.createdAt).toLocaleDateString()}
+    <div className="container mx-auto py-8 px-4 h-full">
+      <header className="flex gap-4 justify-start items-center mb-2">
+        <ExploreSidebar />
+        <BellPlusIcon size={22} />
+        <h1 className="text-3xl font-bold ">Join Requests</h1>
+      </header>
+      <hr className=" border-gray-200 border-[0.1]" />
+      <div className="space-y-4 flex gap-4 h-full">
+        {requests.length > 0 ? (
+          requests.map((request) => (
+            <Card key={request._id}>
+              <CardHeader>
+                <CardTitle className="text-lg">
+                  Request to join {request.projectId.name}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center space-x-4 mb-4">
+                  <Avatar>
+                    <AvatarFallback>
+                      {request.FromUserId.name[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <div className="font-medium">{request.FromUserId.name}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {new Date(request.createdAt).toLocaleDateString()}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <p className="text-muted-foreground mb-6">{request.message}</p>
-              <div className="flex space-x-4">
-                <Button
-                  onClick={() => {
-                    handleAction("accept", request._id, request.FromUserId._id);
-                  }}
-                >
-                  Accept
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    handleAction("reject", request._id, request.FromUserId._id);
-                  }}
-                >
-                  Decline
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+                <p className="text-muted-foreground mb-6">{request.message}</p>
+                <div className="flex space-x-4">
+                  <Button
+                    onClick={() => {
+                      handleAction(
+                        "accept",
+                        request._id,
+                        request.FromUserId._id
+                      );
+                    }}
+                  >
+                    Accept
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      handleAction(
+                        "decline",
+                        request._id,
+                        request.FromUserId._id
+                      );
+                    }}
+                  >
+                    Decline
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        ) : (
+          <div className="flex justify-center items-center w-full h-full">
+            <Image
+              src="/Mailbox.gif"
+              width={100}
+              height={100}
+              alt="No requests"
+              className="w-3/4 md:w-1/3"
+            />
+          </div>
+        )}
       </div>
     </div>
   );

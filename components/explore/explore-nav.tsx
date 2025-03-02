@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  LogOut,
-  Trophy,
-  Rocket,
-  FolderGit2,
-  Search,
-  Bell,
-  Lightbulb,
-} from "lucide-react";
+import { LogOut, Trophy, Rocket, FolderGit2, Search, Bell } from "lucide-react";
 import { usePathname } from "next/navigation";
 import {
   Sidebar,
@@ -42,11 +34,6 @@ const menuItems = [
     title: "Notifications",
     icon: Bell,
     href: "/explore/notifications",
-  },
-  {
-    title: "Ideas",
-    icon: Lightbulb,
-    href: "/explore/ideas",
   },
 ];
 import { toast } from "react-hot-toast";
@@ -88,6 +75,15 @@ export function ExploreNav() {
                     ? pathname === "/explore"
                     : pathname.startsWith(item.href)
                 }
+                className={`${
+                  (
+                    item.href === "/explore"
+                      ? pathname === "/explore"
+                      : pathname.startsWith(item.href)
+                  )
+                    ? "bg-black text-white"
+                    : ""
+                }`}
               >
                 <Link href={item.href}>
                   <item.icon className="h-4 w-4" />

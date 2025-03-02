@@ -1,16 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
 import {
-  Menu,
-  Trophy,
-  Rocket,
-  FolderGit2,
-  Bell,
-  Lightbulb,
-} from "lucide-react";
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { Menu, Trophy, Rocket, FolderGit2, Bell } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -36,11 +34,6 @@ const navigationLinks = [
     icon: Bell,
     href: "/explore/notifications",
   },
-  {
-    title: "Ideas",
-    icon: Lightbulb,
-    href: "/explore/ideas",
-  },
 ];
 
 export function ExploreSidebar() {
@@ -56,6 +49,7 @@ export function ExploreSidebar() {
         </Button>
       </SheetTrigger>
       <SheetContent side="left">
+        <SheetTitle>Navigation</SheetTitle>
         <nav className="flex flex-col gap-4 mt-8">
           {navigationLinks.map((link) => (
             <Link
