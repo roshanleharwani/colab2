@@ -83,7 +83,7 @@ export default function ProjectPage(){
     };
     fetchProject();
   }, [id]);
-  const isFullyRecruited = mockProject.members.length >= mockProject.maxMembers;
+  const isFullyRecruited = members.length >= project.teamSize;
 
   return (
     <div className="container mx-auto py-8 px-4">

@@ -18,6 +18,7 @@ export async function POST(req: Request) {
       projectId: data.projectId ,
       status: "pending",
     });
+    console.log("existingRequest",existingRequest);
 
     if (existingRequest) {
       console.log("You have already sent a request")
