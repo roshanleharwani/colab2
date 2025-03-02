@@ -115,7 +115,7 @@ const NotificationPage = () => {
                 <Button
                   variant="outline"
                   onClick={() => {
-                    // Handle reject request
+                    handleAction("reject", request._id, request.FromUserId._id);
                   }}
                 >
                   Decline
