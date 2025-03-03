@@ -483,9 +483,9 @@ export default function CompetitionRegistrationPage() {
   return (
     <ProgressFormLayout steps={steps} currentStep={step}>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 ">
           {renderStepContent(step)}
-          <div className="flex justify-between">
+          <div className="flex justify-between items-center">
             <Button
               type="button"
               variant="outline"

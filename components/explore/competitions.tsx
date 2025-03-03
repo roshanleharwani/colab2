@@ -228,13 +228,13 @@ export function Competitions() {
       </header>
 
       <main className="flex-1 overflow-auto">
-        <div className="container py-6">
+        <div className="container py-6 h-full">
           {isLoading ? (
             <div className="text-center py-8">Loading competitions...</div>
           ) : error ? (
             <div className="text-center py-8 text-red-500">Error: {error}</div>
           ) : !filteredCompetitions || filteredCompetitions.length === 0 ? (
-            <div className="text-center py-8 flex justify-center items-center flex-col">
+            <div className="text-center py-8 flex justify-center items-center flex-col h-4/5 md:h-full">
               <Image
                 src="/competition.gif"
                 alt="No competitions found"
