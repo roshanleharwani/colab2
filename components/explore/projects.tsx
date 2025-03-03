@@ -203,14 +203,14 @@ export function Projects() {
         </div>
       </header>
 
-      <main className="flex-1 overflow-auto ">
-        <div className="container py-6">
+      <main className="flex-1 overflow-auto  ">
+        <div className="container py-6 h-full">
           {isLoading ? (
             <div className="text-center py-8">Loading projects...</div>
           ) : error ? (
             <div className="text-center py-8 text-red-500">Error: {error}</div>
           ) : !filteredProjects || filteredProjects.length === 0 ? (
-            <div className="text-center py-8 flex justify-center items-center flex-col">
+            <div className="text-center py-8 flex justify-center items-center flex-col h-4/5 md:h-full">
               <Image
                 src="/project.gif"
                 alt="No Projects found"

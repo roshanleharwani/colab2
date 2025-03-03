@@ -13,7 +13,12 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Menu, Code2 } from "lucide-react";
 
 const components: { title: string; href: string; description: string }[] = [
@@ -88,6 +93,7 @@ export function Navbar() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+            <SheetTitle className="mb-5">Explore</SheetTitle>
             <nav className="flex flex-col gap-4">
               <Link
                 href="/explore"
