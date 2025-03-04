@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {toast} from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import useUserStore from "@/store/userStore";
 import {
   Card,
@@ -19,7 +19,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-
 
 interface JoinProjectRequestProps {
   project: {
@@ -47,27 +46,27 @@ export function JoinProjectRequest({
     if (!project.recruiting || isFullyRecruited) return;
 
     setIsPending(true);
-    
+
     try {
       // sending request to the project leader
-      const response=await fetch('/api/join-request',{
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json",
+      const response = await fetch("/api/join-request", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        body:JSON.stringify({
-          type:"project",
-          projectId:project.id,
+        body: JSON.stringify({
+          type: "project",
+          projectId: project.id,
           role,
           message,
-          user:user._id,
-          leader:project.leader.id,
+          user: user._id,
+          leader: project.leader.id,
         }),
-      })
-      if(!response.ok){
+      });
+      if (!response.ok) {
         throw new Error("Failed to send join request");
       }
-      toast.success('your request has been sent to the project leader');
+      toast.success("your request has been sent to the project leader");
 
       setMessage("");
       setRole("");
@@ -75,7 +74,6 @@ export function JoinProjectRequest({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error("Failed to send join request. Please try again.");
-      
     } finally {
       setIsPending(false);
     }

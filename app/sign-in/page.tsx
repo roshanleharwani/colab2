@@ -7,9 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Code2 } from "lucide-react";
 import Link from "next/link";
-import { toast } from "react-hot-toast";
+import { useToast } from "@/hooks/use-toast";
+// import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import useUserStore from "@/store/userStore";
 import {
   Card,
   CardContent,
@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/card";
 
 export default function SignInPage() {
-  const {setUser}=useUserStore();
+  const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
@@ -41,25 +41,39 @@ export default function SignInPage() {
           password: password,
         }),
       });
-      const data=await response.json();
+      const data = await response.json();
       if (response.ok) {
-        setUser(data.user);
         localStorage.setItem("user", JSON.stringify(data.user._id));
         router.push("/explore");
-        toast.success("Logged In");
+        toast({
+          title: "Sign in successful",
+          description: "Welcome back user to exploration",
+        });
       } else if (response.status === 401) {
-        toast.error("Invalid email or password.");
+        toast({
+          title: "Invalid credentials",
+          description: "Check your credentials and try again",
+        });
         setIsLoading(false);
       } else if (response.status === 404) {
-        toast.error("User not found");
+        toast({
+          title: "User Not Found",
+          description: "Check your email or Please sign up",
+        });
         setIsLoading(false);
       } else {
-        toast.error("Something went wrong. Please try again later.");
+        toast({
+          title: "Internal Server Error",
+          description: "Something went wrong",
+        });
         setIsLoading(false);
       }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
-      toast.error("Something went wrong. Please try again later.");
+      toast({
+        title: "Internal Server Error",
+        description: "Something went wrong",
+      });
       setIsLoading(false);
     }
   }

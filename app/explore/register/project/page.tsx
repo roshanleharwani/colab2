@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -67,22 +67,17 @@ const projectFormSchema = stepOneSchema
   .merge(stepTwoSchema)
   .merge(stepThreeSchema)
   .extend({
-    leaderId: z.string().optional() // Add this line
+    leaderId: z.string().optional(), // Add this line
   });
-
 
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
 
 export default function ProjectRegistrationPage() {
-  const {user,clearUser} = useUserStore();
+  const { user } = useUserStore();
   const [step, setStep] = useState(1);
   const router = useRouter();
   const { toast } = useToast();
   const [techStack, setTechStack] = useState<string[]>([]);
-
-  if(!user?._id){
-    router.push("/login");
-  }
 
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectFormSchema),
@@ -100,7 +95,6 @@ export default function ProjectRegistrationPage() {
       requirements: "",
       projectType: "",
       githubUrl: "",
-
     },
   });
 
@@ -162,7 +156,7 @@ export default function ProjectRegistrationPage() {
           },
           body: JSON.stringify(data),
         });
-        console.log('after coming from backend');
+        console.log("after coming from backend");
         console.log(response);
         if (!response.ok) {
           const errorData = await response.json();

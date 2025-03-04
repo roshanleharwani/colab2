@@ -96,9 +96,9 @@ export function ExploreNav() {
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
-          <SidebarMenuItem>
+          <SidebarMenuItem className="flex justify-center">
             <SidebarMenuButton
-              className="text-red-500 hover:text-red-600 hover:bg-red-50"
+              className="text-white rounded-md hover:text-white hover:scale-105 transition ease-in-out w-4/5 hover:bg-black/75 flex items-center gap-4  justify-center py-2 bg-black/80"
               onClick={() => {
                 handleLogout();
               }}

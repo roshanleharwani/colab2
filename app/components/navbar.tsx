@@ -24,7 +24,7 @@ import { Menu, Code2 } from "lucide-react";
 const components: { title: string; href: string; description: string }[] = [
   {
     title: "Projects",
-    href: "/explore/projects",
+    href: "/explore/",
     description:
       "Browse and join exciting student projects across various domains.",
   },

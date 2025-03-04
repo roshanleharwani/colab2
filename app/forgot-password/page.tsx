@@ -44,15 +44,40 @@ export default function ForgotPasswordPage() {
     },
   });
 
+  const userName = "User";
+  const resetLink = "https://example.com/reset-password";
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       setIsLoading(true);
-      /// api code here
-      setIsSuccess(true);
-      toast({
-        title: "Reset email sent",
-        description: "Check your inbox for the password reset link.",
+      const response = await fetch("/api/emails/reset-link", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: values.email,
+        }),
       });
+      if (response.ok) {
+        setIsSuccess(true);
+        toast({
+          title: "Reset email sent",
+          description: "Check your inbox for the password reset link.",
+        });
+      } else if (response.status === 404) {
+        toast({
+          title: "Error",
+          description: "User not found.",
+          variant: "destructive",
+        });
+      } else {
+        setIsSuccess(false);
+        toast({
+          title: "Error",
+          description: "Something went wrong. Please try again.",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       toast({
         title: "Error",
@@ -136,7 +161,7 @@ export default function ForgotPasswordPage() {
           <CardFooter className="flex flex-col space-y-4">
             <div className="text-center text-sm text-muted-foreground">
               Remember your password?{" "}
-              <Link href="/login" className="text-primary hover:underline">
+              <Link href="/sign-in" className="text-primary hover:underline">
                 Sign in
               </Link>
             </div>

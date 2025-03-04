@@ -4,9 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
-import useUserStore from "@/store/userStore";
 import { toast } from "react-hot-toast";
-import { join } from "path";
 import { ExploreSidebar } from "@/components/explore/explore-sidebar";
 import { BellPlusIcon } from "lucide-react";
 import Image from "next/image";
@@ -142,7 +140,7 @@ const NotificationPage = () => {
             </Card>
           ))
         ) : (
-          <div className="flex justify-center items-center w-full h-full">
+          <div className="flex flex-col justify-center items-center w-full h-full">
             <Image
               src="/Mailbox.gif"
               width={100}
@@ -150,6 +148,9 @@ const NotificationPage = () => {
               alt="No requests"
               className="w-3/4 md:w-1/3"
             />
+            <h3 className="text-2xl font-semibold text-muted-foreground">
+              No requests
+            </h3>
           </div>
         )}
       </div>

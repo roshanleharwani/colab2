@@ -184,7 +184,7 @@ export default function ContactPage() {
                           <FormControl>
                             <Textarea
                               placeholder="Your message"
-                              className="min-h-[150px]"
+                              className="min-h-[150px] resize-none"
                               {...field}
                             />
                           </FormControl>
@@ -246,7 +246,7 @@ export default function ContactPage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="flex gap-4">
+                    <div className="flex gap-4 rounded-full w-full">
                       {socialLinks.map((social, index) => (
                         <motion.div
                           key={social.label}
@@ -256,9 +256,9 @@ export default function ContactPage() {
                         >
                           <Link
                             href={social.href}
-                            className="rounded-lg bg-muted p-2 text-muted-foreground hover:text-primary transition-colors"
+                            className="rounded-full  p-2 text-muted-foreground hover:text-primary transition-colors"
                           >
-                            <social.icon className="h-6 w-6" />
+                            <social.icon className="" />
                             <span className="sr-only">{social.label}</span>
                           </Link>
                         </motion.div>
