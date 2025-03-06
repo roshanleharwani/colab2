@@ -1,5 +1,5 @@
 "use client";
-
+import { useTheme } from "next-themes";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
@@ -62,7 +62,7 @@ export function Competitions() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState("all");
-
+  const { theme } = useTheme();
   useEffect(() => {
     const fetchCompetitions = async () => {
       try {
@@ -236,7 +236,11 @@ export function Competitions() {
           ) : !filteredCompetitions || filteredCompetitions.length === 0 ? (
             <div className="text-center py-8 flex justify-center items-center flex-col h-4/5 md:h-full">
               <Image
-                src="/competition.gif"
+                src={
+                  theme === "light"
+                    ? "/competition.gif"
+                    : "/Competition (1).gif"
+                }
                 alt="No competitions found"
                 className="w-3/4 md:w-1/3 mb-4"
                 width={300}

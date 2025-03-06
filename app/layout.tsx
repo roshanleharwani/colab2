@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
-
+import { ThemeProvider } from "next-themes";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -27,7 +27,11 @@ export default function RootLayout({
       <body className={`${inter.className} flex min-h-full flex-col`}>
         <Toaster />
 
-        <main className="flex-1">{children}</main>
+        <main className="flex-1">
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            {children}
+          </ThemeProvider>
+        </main>
       </body>
     </html>
   );

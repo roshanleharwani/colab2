@@ -1,5 +1,5 @@
 "use client";
-
+import { useTheme } from "next-themes";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
@@ -144,7 +144,7 @@ export function Startups() {
       </div>
     </div>
   );
-
+  const { theme } = useTheme();
   return (
     <div className="flex flex-col h-full m-2">
       <header className="border-b">
@@ -233,7 +233,7 @@ export function Startups() {
           ) : !filteredStartups || filteredStartups.length === 0 ? (
             <div className="text-center py-8 flex justify-center items-center flex-col h-4/5 md:h-full">
               <Image
-                src="/startup.gif"
+                src={theme === "light" ? "/startup.gif" : "/Startup (1).gif"}
                 alt="No startups found"
                 className="w-3/4 md:w-1/3 mb-4"
                 width={300}

@@ -4,7 +4,6 @@ import { LogOut, Trophy, Rocket, FolderGit2, Bell } from "lucide-react";
 import { usePathname } from "next/navigation";
 import {
   Sidebar,
-  SidebarHeader,
   SidebarContent,
   SidebarFooter,
   SidebarMenu,
@@ -56,12 +55,7 @@ export function ExploreNav() {
   };
 
   return (
-    <Sidebar>
-      <SidebarHeader>
-        <div className="flex justify-center border-b-[0.1px] py-5  border-gray-200 items-center text-xl font-semibold">
-          Explore
-        </div>
-      </SidebarHeader>
+    <Sidebar className="md:pt-20 px-3">
       <SidebarContent>
         <SidebarMenu>
           {menuItems.map((item) => (
@@ -96,7 +90,7 @@ export function ExploreNav() {
         <SidebarMenu>
           <SidebarMenuItem className="flex justify-center">
             <SidebarMenuButton
-              className="text-white rounded-md hover:text-white hover:scale-105 transition ease-in-out w-4/5 hover:bg-black/75 flex items-center gap-4  justify-center py-2 bg-black/80"
+              className=" rounded-md  hover:scale-105 transition ease-in-out w-4/5  flex items-center gap-4  justify-center py-2 "
               onClick={() => {
                 handleLogout();
               }}

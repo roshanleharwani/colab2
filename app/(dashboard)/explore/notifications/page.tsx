@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
+import { useTheme } from "next-themes";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -79,6 +80,7 @@ const NotificationPage = () => {
     };
     fetchRequests();
   }, [user]);
+  const { theme } = useTheme();
   return (
     <div className="container mx-auto py-8 px-4 h-full">
       <header className="flex gap-4 justify-start items-center mb-2">
@@ -142,7 +144,7 @@ const NotificationPage = () => {
         ) : (
           <div className="flex flex-col justify-center items-center w-full h-full">
             <Image
-              src="/Mailbox.gif"
+              src={theme === "light" ? "/Mailbox.gif" : "/Mailbox (1).gif"}
               width={100}
               height={100}
               alt="No requests"

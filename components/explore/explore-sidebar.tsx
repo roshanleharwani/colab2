@@ -84,7 +84,7 @@ export function ExploreSidebar() {
             </Link>
           ))}
           <SheetTrigger
-            className="text-white rounded-md   flex items-center gap-4 mx-5 justify-center py-2  mt-10 bg-black/80"
+            className=" rounded-md   flex items-center gap-4 mx-5 justify-center py-2  mt-10 "
             onClick={() => {
               handleLogout();
             }}
