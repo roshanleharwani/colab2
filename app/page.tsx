@@ -3,10 +3,11 @@ import Features from "@/app/components/features";
 import About from "@/app/components/about";
 import Faq from "@/app/components/faq";
 import Footer from "@/app/components/footer";
-
+import { Navbar } from "@/app/components/navbar";
 export default function Home() {
   return (
     <div className="min-h-screen">
+      <Navbar />
       <main>
         <Hero />
         <Features />

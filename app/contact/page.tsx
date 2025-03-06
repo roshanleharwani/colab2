@@ -22,7 +22,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Mail, MapPin } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-
+import { Navbar } from "@/app/components/navbar";
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
@@ -93,144 +93,147 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <main className="flex-1">
-        <section className="w-full py-4 md:py-10 lg:py-12">
-          <div className="container px-4 md:px-6">
-            <div className="grid gap-12 lg:grid-cols-2">
-              {/* Contact Form */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <div className="space-y-4">
-                  <h1 className="text-3xl font-bold tracking-tighter">
-                    Get in Touch
-                  </h1>
-                  <p className="text-muted-foreground">
-                    {
-                      "Have a question or suggestion? We'd love to hear from you.Fill out the form below and we'll get back to you as soon as possible."
-                    }
-                  </p>
-                </div>
-                <Form {...form}>
-                  <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-6 mt-8"
-                  >
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <FormField
-                        control={form.control}
-                        name="name"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Name</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Your name" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Email</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Your email" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                    <FormField
-                      control={form.control}
-                      name="subject"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Subject</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Message subject" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="message"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Message</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              placeholder="Your message"
-                              className="min-h-[150px] resize-none"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            Please provide as much detail as possible about your
-                            inquiry.
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button
-                      type="submit"
-                      className="w-full"
-                      disabled={isLoading}
+    <>
+      <Navbar />
+      <div className="flex flex-col min-h-screen">
+        <main className="flex-1">
+          <section className="w-full py-4 md:py-10 lg:py-12">
+            <div className="container px-4 md:px-6">
+              <div className="grid gap-12 lg:grid-cols-2">
+                {/* Contact Form */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <div className="space-y-4">
+                    <h1 className="text-3xl font-bold tracking-tighter">
+                      Get in Touch
+                    </h1>
+                    <p className="text-muted-foreground">
+                      {
+                        "Have a question or suggestion? We'd love to hear from you.Fill out the form below and we'll get back to you as soon as possible."
+                      }
+                    </p>
+                  </div>
+                  <Form {...form}>
+                    <form
+                      onSubmit={form.handleSubmit(onSubmit)}
+                      className="space-y-6 mt-8"
                     >
-                      {isLoading ? "Sending..." : "Send Message"}
-                    </Button>
-                  </form>
-                </Form>
-              </motion.div>
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <FormField
+                          control={form.control}
+                          name="name"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Name</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Your name" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="email"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Email</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Your email" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <FormField
+                        control={form.control}
+                        name="subject"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Subject</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Message subject" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="message"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Message</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="Your message"
+                                className="min-h-[150px] resize-none"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormDescription>
+                              Please provide as much detail as possible about
+                              your inquiry.
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <Button
+                        type="submit"
+                        className="w-full"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? "Sending..." : "Send Message"}
+                      </Button>
+                    </form>
+                  </Form>
+                </motion.div>
 
-              {/* Contact Information */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-                className="space-y-8"
-              >
-                <div className="grid gap-4 sm:gap-8">
-                  {contactInfo.map((item, index) => (
-                    <motion.div
-                      key={item.label}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                    >
-                      <Card>
-                        <CardContent className="flex items-center gap-4 p-6">
-                          <div className="rounded-lg bg-primary/10 p-2">
-                            <item.icon className="h-6 w-6 text-primary" />
-                          </div>
-                          <div>
-                            <h3 className="font-semibold">{item.label}</h3>
-                            <Link
-                              href={item.href}
-                              className="text-muted-foreground hover:text-primary transition-colors"
-                            >
-                              {item.value}
-                            </Link>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
+                {/* Contact Information */}
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="space-y-8"
+                >
+                  <div className="grid gap-4 sm:gap-8">
+                    {contactInfo.map((item, index) => (
+                      <motion.div
+                        key={item.label}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: index * 0.1 }}
+                      >
+                        <Card>
+                          <CardContent className="flex items-center gap-4 p-6">
+                            <div className="rounded-lg bg-primary/10 p-2">
+                              <item.icon className="h-6 w-6 text-primary" />
+                            </div>
+                            <div>
+                              <h3 className="font-semibold">{item.label}</h3>
+                              <Link
+                                href={item.href}
+                                className="text-muted-foreground hover:text-primary transition-colors"
+                              >
+                                {item.value}
+                              </Link>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              </div>
             </div>
-          </div>
-        </section>
-      </main>
-    </div>
+          </section>
+        </main>
+      </div>
+    </>
   );
 }

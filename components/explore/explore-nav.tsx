@@ -58,7 +58,7 @@ export function ExploreNav() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <div className="flex justify-center items-center text-xl font-semibold">
+        <div className="flex justify-center border-b-[0.1px] py-5  border-gray-200 items-center text-xl font-semibold">
           Explore
         </div>
       </SidebarHeader>

@@ -9,13 +9,14 @@ export default function ExploreLayout({
   children: React.ReactNode;
 }) {
   return (
-    <SidebarProvider defaultOpen={true}>
-      <div className="flex min-h-screen w-full">
-        <ExploreNav />
-
-        <Toaster />
-        <SidebarInset className="flex-1   ">{children}</SidebarInset>
-      </div>
-    </SidebarProvider>
+    <>
+      <SidebarProvider defaultOpen={true}>
+        <div className="flex w-full">
+          <ExploreNav />
+          <Toaster />
+          <SidebarInset className="flex-1">{children}</SidebarInset>
+        </div>
+      </SidebarProvider>
+    </>
   );
 }
