@@ -18,15 +18,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Mail, Phone, MapPin, Github, Twitter, Linkedin } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Mail, MapPin } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -39,44 +34,21 @@ const contactInfo = [
   {
     icon: Mail,
     label: "Email",
-    value: "hello@collabcampus.com",
-    href: "mailto:hello@collabcampus.com",
-  },
-  {
-    icon: Phone,
-    label: "Phone",
-    value: "+1 (555) 123-4567",
-    href: "tel:+15551234567",
+    value: "colabvitap@gmail.com",
+    href: "mailto:colabvitap@gmail.com",
   },
   {
     icon: MapPin,
     label: "Address",
-    value: "123 Innovation Street, Tech City, TC 12345",
-    href: "https://maps.google.com",
-  },
-];
-
-const socialLinks = [
-  {
-    icon: Github,
-    label: "GitHub",
-    href: "https://github.com",
-  },
-  {
-    icon: Twitter,
-    label: "Twitter",
-    href: "https://twitter.com",
-  },
-  {
-    icon: Linkedin,
-    label: "LinkedIn",
-    href: "https://linkedin.com",
+    value:
+      "VIT-AP University, G-30, Inavolu, Beside AP Secretariat, Amaravati, Andhra Pradesh 522237",
+    href: "https://www.google.com/maps/place/VIT-AP+University/@16.4970554,80.4966216,17z/data=!3m1!4b1!4m6!3m5!1s0x3a35f27d40f21c55:0x1490eacd54859850!8m2!3d16.4970554!4d80.4991965!16s%2Fg%2F11gnsnjyhf?entry=ttu&g_ep=EgoyMDI1MDMwMy4wIKXMDSoASAFQAw%3D%3D",
   },
 ];
 
 export default function ContactPage() {
   const { toast } = useToast();
-
+  const [isLoading, setIsLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -89,15 +61,27 @@ export default function ContactPage() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      // Here you would typically send the form data to your API
-      console.log(values);
-
-      toast({
-        title: "Message sent!",
-        description: "We'll get back to you as soon as possible.",
+      setIsLoading(true);
+      const response = await fetch("/api/emails/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
       });
-
-      form.reset();
+      if (response.ok) {
+        toast({
+          title: "Message sent!",
+          description: "We'll get back to you as soon as possible.",
+        });
+        form.reset();
+      } else {
+        toast({
+          title: "Error",
+          description: "Something went wrong. Please try again.",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       toast({
         title: "Error",
@@ -105,12 +89,13 @@ export default function ContactPage() {
         variant: "destructive",
       });
     }
+    setIsLoading(false);
   }
 
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32">
+        <section className="w-full py-4 md:py-10 lg:py-12">
           <div className="container px-4 md:px-6">
             <div className="grid gap-12 lg:grid-cols-2">
               {/* Contact Form */}
@@ -196,8 +181,12 @@ export default function ContactPage() {
                         </FormItem>
                       )}
                     />
-                    <Button type="submit" className="w-full sm:w-auto">
-                      Send Message
+                    <Button
+                      type="submit"
+                      className="w-full"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? "Sending..." : "Send Message"}
                     </Button>
                   </form>
                 </Form>
@@ -237,52 +226,6 @@ export default function ContactPage() {
                     </motion.div>
                   ))}
                 </div>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Connect With Us</CardTitle>
-                    <CardDescription>
-                      Follow us on social media for updates and news.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex gap-4 rounded-full w-full">
-                      {socialLinks.map((social, index) => (
-                        <motion.div
-                          key={social.label}
-                          initial={{ opacity: 0, scale: 0.5 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ duration: 0.5, delay: index * 0.1 }}
-                        >
-                          <Link
-                            href={social.href}
-                            className="rounded-full  p-2 text-muted-foreground hover:text-primary transition-colors"
-                          >
-                            <social.icon className="" />
-                            <span className="sr-only">{social.label}</span>
-                          </Link>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Office Location</CardTitle>
-                    <CardDescription>
-                      Visit us at our campus office.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="aspect-video">
-                    <div className="w-full h-full bg-muted rounded-lg">
-                      {/* Add your map component here */}
-                      <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                        Map placeholder
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
               </motion.div>
             </div>
           </div>

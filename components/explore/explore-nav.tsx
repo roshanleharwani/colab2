@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut, Trophy, Rocket, FolderGit2, Search, Bell } from "lucide-react";
+import { LogOut, Trophy, Rocket, FolderGit2, Bell } from "lucide-react";
 import { usePathname } from "next/navigation";
 import {
   Sidebar,
@@ -10,7 +10,6 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarInput,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -59,10 +58,9 @@ export function ExploreNav() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <form className="px-2">
-          <SidebarInput placeholder="Search..." className="pl-8" />
-          <Search className="absolute left-6 top-6 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
-        </form>
+        <div className="flex justify-center items-center text-xl font-semibold">
+          Explore
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>
