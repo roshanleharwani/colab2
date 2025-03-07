@@ -34,6 +34,7 @@ const menuItems = [
     href: "/explore/notifications",
   },
 ];
+import { useTheme } from "next-themes";
 import { toast } from "react-hot-toast";
 export function ExploreNav() {
   const pathname = usePathname();
@@ -53,7 +54,7 @@ export function ExploreNav() {
       toast.error("Failed to logout");
     }
   };
-
+  const { theme } = useTheme();
   return (
     <Sidebar className="md:pt-20 px-3">
       <SidebarContent>
@@ -90,7 +91,11 @@ export function ExploreNav() {
         <SidebarMenu>
           <SidebarMenuItem className="flex justify-center">
             <SidebarMenuButton
-              className=" rounded-md  hover:scale-105 transition ease-in-out w-4/5  flex items-center gap-4  justify-center py-2 "
+              className={`${
+                theme === "light"
+                  ? "bg-black/80 hover:bg-black/75 text-white hover:text-white "
+                  : "bg-white/80 hover:bg-white/75 text-black hover:text-black"
+              } rounded-md  hover:scale-105 transition ease-in-out w-4/5  flex items-center gap-4  justify-center py-2 `}
               onClick={() => {
                 handleLogout();
               }}

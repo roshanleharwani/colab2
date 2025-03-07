@@ -1,5 +1,5 @@
 "use client";
-
+import { useTheme } from "next-themes";
 import * as React from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -20,7 +20,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Menu, Code2 } from "lucide-react";
-
+import { MoonIcon, Sun } from "lucide-react";
 const components: { title: string; href: string; description: string }[] = [
   {
     title: "Projects",
@@ -43,7 +43,7 @@ const components: { title: string; href: string; description: string }[] = [
 
 export function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
-
+  const { theme, setTheme } = useTheme();
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
@@ -150,6 +150,21 @@ export function Navbar() {
             </Button>
             <Button variant="ghost" asChild className="md:hidden">
               <Link href="/sign-in">Login</Link>
+            </Button>
+            <Button
+              className="rounded-full "
+              size="icon"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            >
+              {theme === "dark" ? (
+                <>
+                  <Sun size={5} />
+                </>
+              ) : (
+                <>
+                  <MoonIcon size={5} />
+                </>
+              )}
             </Button>
           </nav>
         </div>

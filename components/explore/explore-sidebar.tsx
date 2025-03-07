@@ -1,5 +1,5 @@
 "use client";
-
+import { useTheme } from "next-themes";
 import { useState } from "react";
 import {
   Sheet,
@@ -39,6 +39,7 @@ const navigationLinks = [
 
 export function ExploreSidebar() {
   const [open, setOpen] = useState(false);
+  const { theme } = useTheme();
   const pathname = usePathname();
   const router = useRouter();
   const handleLogout = async () => {
@@ -79,12 +80,16 @@ export function ExploreSidebar() {
                   : "text-muted-foreground"
               )}
             >
-              <link.icon className="h-4 w-4 text-black" />
+              <link.icon className="h-4 w-4" />
               {link.title}
             </Link>
           ))}
           <SheetTrigger
-            className=" rounded-md   flex items-center gap-4 mx-5 justify-center py-2  mt-10 "
+            className={`${
+              theme === "light"
+                ? "bg-black/80 hover:bg-black/75 text-white "
+                : "bg-white/80 hover:bg-white/75 text-black"
+            } rounded-md  hover:scale-105 transition ease-in-out w-4/5  flex items-center gap-4  justify-center py-2 `}
             onClick={() => {
               handleLogout();
             }}

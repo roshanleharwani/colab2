@@ -13,8 +13,7 @@ const features = [
   {
     icon: <Code2 className="h-10 w-10" />,
     title: "Project Collaboration",
-    description:
-      "Seamlessly collaborate on projects with built-in tools and integrations.",
+    description: "Seamlessly collaborate on projects with your team.",
   },
   {
     icon: <Rocket className="h-10 w-10" />,

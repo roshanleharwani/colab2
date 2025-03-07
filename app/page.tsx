@@ -6,7 +6,7 @@ import Footer from "@/app/components/footer";
 import { Navbar } from "@/app/components/navbar";
 export default function Home() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-lightBg dark:bg-darkBg text-lightText dark:text-darkText">
       <Navbar />
       <main>
         <Hero />

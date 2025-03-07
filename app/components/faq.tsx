@@ -1,7 +1,12 @@
-"use client"
+"use client";
 
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { motion } from "framer-motion"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { motion } from "framer-motion";
 
 const faqs = [
   {
@@ -20,11 +25,11 @@ const faqs = [
       "We list upcoming hackathons with all the important details. You can register, form or join teams, and coordinate with your teammates directly through our platform.",
   },
   {
-    question: "What resources are available for startups?",
+    question: "What about startups?",
     answer:
       "We provide resources including mentorship connections, funding opportunities, and workshops. You can also connect with other student entrepreneurs and potential co-founders.",
   },
-]
+];
 
 export default function Faq() {
   return (
@@ -37,8 +42,12 @@ export default function Faq() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Frequently Asked Questions</h2>
-          <p className="mt-4 text-muted-foreground md:text-lg">Everything you need to know about the platform</p>
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+            Frequently Asked Questions
+          </h2>
+          <p className="mt-4 text-muted-foreground md:text-lg">
+            Everything you need to know about the platform
+          </p>
         </motion.div>
 
         <motion.div
@@ -59,6 +68,5 @@ export default function Faq() {
         </motion.div>
       </div>
     </section>
-  )
+  );
 }
-

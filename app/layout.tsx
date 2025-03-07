@@ -28,7 +28,7 @@ export default function RootLayout({
         <Toaster />
 
         <main className="flex-1">
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
             {children}
           </ThemeProvider>
         </main>

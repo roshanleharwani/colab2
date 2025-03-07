@@ -3,7 +3,7 @@
 
 "use client";
 import { ExploreSidebar } from "@/components/explore/explore-sidebar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -39,15 +39,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Trash2 } from "lucide-react";
-
+import { Trash2, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 const profileFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
-  bio: z.string().max(500, "Bio must not exceed 500 characters").optional(),
-  regNumber: z.string().min(2, "Registration number is required"),
-  department: z.string().min(2, "Department is required"),
-  year: z.string().min(1, "Year is required"),
+  registration_number: z.string().min(2, "Registration number is required"),
+  degree: z.string().min(2, "Degree program is required"),
+  phone: z.number().optional(),
 });
 
 const passwordFormSchema = z
@@ -70,40 +69,75 @@ const passwordFormSchema = z
     path: ["confirmPassword"],
   });
 
-// Mock user data
-const userData = {
-  name: "John Doe",
-  email: "john.doe@example.com",
-  bio: "Computer Science student passionate about web development and AI.",
-  regNumber: "CS2023001",
-  department: "Computer Science",
-  year: "3rd Year",
-  skills: ["JavaScript", "React", "Node.js", "Python", "Machine Learning"],
-  projects: [
-    { id: "1", name: "AI Study Assistant", role: "Team Lead" },
-    { id: "2", name: "Campus Navigation App", role: "Frontend Developer" },
-  ],
-  competitions: [
-    { id: "1", name: "Hackathon 2023", position: "2nd Place" },
-    { id: "2", name: "Code Challenge", position: "Participant" },
-  ],
-};
+interface UserData {
+  _id: string;
+  name: string;
+  email: string;
+  phone?: number;
+  degree: string;
+  registration_number: string;
+  __v: number;
+}
 
 export default function ProfilePage() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [fetchingUser, setFetchingUser] = useState(true);
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [open, setOpen] = useState(false);
+  const router = useRouter();
+  // Fetch user data
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        setFetchingUser(true);
+        const response = await fetch("/api/user");
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch user data");
+        }
+
+        const data = await response.json();
+        setUserData(data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load profile data. Please refresh the page.",
+          variant: "destructive",
+        });
+      } finally {
+        setFetchingUser(false);
+      }
+    };
+
+    fetchUserData();
+  }, [toast]);
 
   const profileForm = useForm<z.infer<typeof profileFormSchema>>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      name: userData.name,
-      email: userData.email,
-      bio: userData.bio,
-      regNumber: userData.regNumber,
-      department: userData.department,
-      year: userData.year,
+      name: "",
+      email: "",
+
+      registration_number: "",
+      degree: "",
+      phone: undefined,
     },
   });
+
+  // Update form when user data is loaded
+  useEffect(() => {
+    if (userData) {
+      profileForm.reset({
+        name: userData.name,
+        email: userData.email,
+        registration_number: userData.registration_number,
+        degree: userData.degree,
+        phone: userData.phone,
+      });
+    }
+  }, [userData]);
 
   const passwordForm = useForm<z.infer<typeof passwordFormSchema>>({
     resolver: zodResolver(passwordFormSchema),
@@ -118,7 +152,20 @@ export default function ProfilePage() {
     try {
       setIsLoading(true);
       // Here you would typically call your API to update the profile
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulated API call
+      const response = await fetch("/api/user", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update profile");
+      }
+
+      // Update the local user data
+      setUserData((prev) => (prev ? { ...prev, ...values } : null));
 
       toast({
         title: "Profile updated",
@@ -134,18 +181,31 @@ export default function ProfilePage() {
       setIsLoading(false);
     }
   }
-  const [open, setOpen] = useState(false);
 
   async function onPasswordSubmit(values: z.infer<typeof passwordFormSchema>) {
     try {
       setIsLoading(true);
       // Here you would typically call your API to update the password
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulated API call
+      const response = await fetch("/api/user/change-password", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          currentPassword: values.currentPassword,
+          newPassword: values.newPassword,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update password");
+      }
 
       toast({
         title: "Password updated",
         description: "Your password has been updated successfully.",
       });
+
       passwordForm.reset({
         currentPassword: "",
         newPassword: "",
@@ -160,6 +220,62 @@ export default function ProfilePage() {
     } finally {
       setIsLoading(false);
     }
+  }
+  const handleDeleteAccount = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch("/api/user", {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete account");
+      }
+
+      toast({
+        title: "Account deleted",
+        description: "Your account has been successfully deleted.",
+      });
+
+      // Redirect to homepage or login
+      router.push("/");
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete account. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+      setOpen(false);
+    }
+  };
+
+  if (fetchingUser) {
+    return (
+      <div className="container p-8 flex items-center justify-center min-h-screen">
+        <div className="flex flex-col items-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="mt-2 text-muted-foreground">Loading profile data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!userData) {
+    return (
+      <div className="container p-8">
+        <div className="flex flex-col items-center justify-center min-h-[60vh]">
+          <h2 className="text-xl font-semibold">Failed to load profile</h2>
+          <p className="text-muted-foreground mt-2">
+            Please refresh the page or try again later.
+          </p>
+          <Button className="mt-4" onClick={() => window.location.reload()}>
+            Refresh
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -185,11 +301,14 @@ export default function ProfilePage() {
                   <AvatarFallback>{userData.name[0]}</AvatarFallback>
                 </Avatar>
                 <h2 className="text-xl font-bold">{userData.name}</h2>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs text-muted-foreground ">
                   {userData.email}
                 </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {userData.department} • {userData.year}
+                <p className="text-sm text-muted-foreground mt-1">
+                  {userData.degree}
+                </p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {userData.registration_number}
                 </p>
               </CardContent>
             </Card>
@@ -250,7 +369,7 @@ export default function ProfilePage() {
                         <div className="grid gap-4 sm:grid-cols-2">
                           <FormField
                             control={profileForm.control}
-                            name="regNumber"
+                            name="registration_number"
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel>Registration Number</FormLabel>
@@ -263,10 +382,10 @@ export default function ProfilePage() {
                           />
                           <FormField
                             control={profileForm.control}
-                            name="department"
+                            name="degree"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Department</FormLabel>
+                                <FormLabel>Degree</FormLabel>
                                 <FormControl>
                                   <Input {...field} />
                                 </FormControl>
@@ -275,41 +394,32 @@ export default function ProfilePage() {
                             )}
                           />
                         </div>
+
                         <FormField
                           control={profileForm.control}
-                          name="year"
+                          name="phone"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Year</FormLabel>
+                              <FormLabel>Phone</FormLabel>
                               <FormControl>
-                                <Input {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={profileForm.control}
-                          name="bio"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Bio</FormLabel>
-                              <FormControl>
-                                <Textarea
-                                  placeholder="Tell us about yourself"
-                                  className="min-h-[120px]"
+                                <Input
+                                  type="number"
                                   {...field}
                                   value={field.value || ""}
+                                  onChange={(e) =>
+                                    field.onChange(
+                                      e.target.value
+                                        ? parseInt(e.target.value, 10)
+                                        : undefined
+                                    )
+                                  }
                                 />
                               </FormControl>
-                              <FormDescription>
-                                Brief description for your profile. Maximum 500
-                                characters.
-                              </FormDescription>
                               <FormMessage />
                             </FormItem>
                           )}
                         />
+
                         <Button type="submit" disabled={isLoading}>
                           {isLoading ? "Saving..." : "Save changes"}
                         </Button>
@@ -384,7 +494,7 @@ export default function ProfilePage() {
                     </Form>
                   </CardContent>
                 </Card>
-                <Card className="mt-6">
+                <Card className="mt-6 ">
                   <CardHeader>
                     <CardTitle>Delete Account</CardTitle>
                     <CardDescription>
@@ -403,7 +513,7 @@ export default function ProfilePage() {
                           <span>Delete Account</span>
                         </Button>
                       </DialogTrigger>
-                      <DialogContent>
+                      <DialogContent className="w-11/12">
                         <DialogHeader>
                           <DialogTitle>Delete Account</DialogTitle>
                           <DialogDescription>
@@ -412,7 +522,7 @@ export default function ProfilePage() {
                             permanently removed.
                           </DialogDescription>
                         </DialogHeader>
-                        <DialogFooter>
+                        <DialogFooter className="sm:flex gap-4">
                           <Button
                             variant="outline"
                             onClick={() => setOpen(false)}
@@ -421,10 +531,7 @@ export default function ProfilePage() {
                           </Button>
                           <Button
                             variant="destructive"
-                            onClick={() => {
-                              // Handle account deletion here
-                              setOpen(false);
-                            }}
+                            onClick={handleDeleteAccount}
                           >
                             Delete Account
                           </Button>
