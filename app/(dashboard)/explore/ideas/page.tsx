@@ -45,6 +45,8 @@ import {
 import { IdeaForm } from "@/components/idea-form";
 import { IdeaModal } from "@/components/idea-modal";
 import { ExploreSidebar } from "@/components/explore/explore-sidebar";
+import Image from "next/image";
+import { useTheme } from "next-themes";
 
 // Get current user from localStorage
 const getCurrentUser = () => {
@@ -93,6 +95,7 @@ interface Idea {
 }
 
 export default function IdeasPage() {
+  const { theme, setTheme } = useTheme();
   const router = useRouter();
   const { toast } = useToast();
   const [ideas, setIdeas] = useState<Idea[]>([]);
@@ -122,12 +125,7 @@ export default function IdeasPage() {
       try {
         setIsLoading(true);
 
-        // Build query parameters
-        const params = new URLSearchParams();
-        if (searchQuery) params.append("search", searchQuery);
-        params.append("sort", sortBy);
-
-        const response = await fetch(`/api/ideas?${params.toString()}`);
+        const response = await fetch(`/api/ideas`);
 
         if (!response.ok) {
           const errorData = await response.json();
@@ -165,7 +163,23 @@ export default function IdeasPage() {
     };
 
     fetchIdeas();
-  }, [searchQuery, sortBy, currentUser]);
+  }, [currentUser]);
+
+  // Filter and sort ideas based on search query and sort criteria
+  const filteredIdeas = ideas
+    .filter((idea) =>
+      idea.title.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (sortBy === "latest") {
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      } else if (sortBy === "popular") {
+        return b.likes.length - a.likes.length;
+      }
+      return 0;
+    });
 
   // Handle like/unlike
   const handleLike = async (ideaId: string) => {
@@ -431,22 +445,23 @@ export default function IdeasPage() {
               Try Again
             </Button>
           </div>
-        ) : ideas.length === 0 ? (
-          <div className="text-center py-10">
-            <h3 className="text-xl font-medium mb-2">No ideas found</h3>
-            <p className="text-muted-foreground mb-6">
-              {searchQuery
-                ? "No ideas match your search criteria."
-                : "Be the first to share an idea!"}
+        ) : filteredIdeas.length === 0 ? (
+          <div className="text-center py-8 flex justify-center items-center flex-col h-4/5 md:h-full">
+            <Image
+              src={theme === "light" ? "/idea-dark.gif" : "/idea.gif"}
+              alt="No Projects found"
+              className="w-3/4 md:w-1/3 mb-4"
+              width={300}
+              height={300}
+            />
+            <p className="text-muted-foreground">
+              No Idea Found for your search query{" "}
             </p>
-            <Button onClick={handleOpenForm}>
-              <Plus className="mr-2 h-4 w-4" /> Post Idea
-            </Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <AnimatePresence>
-              {ideas.map((idea) => (
+              {filteredIdeas.map((idea) => (
                 <motion.div
                   key={idea._id}
                   initial={{ opacity: 0, y: 20 }}
