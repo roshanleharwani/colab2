@@ -130,39 +130,50 @@ export function Projects() {
       <header className="border-b">
         <div className="container py-4">
           {/* Desktop Search and Filters */}
-          <div className="hidden md:flex items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
-                <Input
-                  placeholder="Search projects..."
-                  className="w-[300px] pl-8"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
+          <div className="hidden md:flex items-center justify-between gap-4 w-full">
+            <div className="flex flex-col gap-4 w-full">
+              <div className="flex  items-center  gap-2 my-2 w-full">
+                <FolderGit2 size={32} />
+                <h1 className="text-2xl md:text-3xl font-bold w-full">
+                  Projects
+                </h1>
+                <Button
+                  className="whitespace-nowrap"
+                  onClick={() => router.push("/explore/register/project")}
+                >
+                  Create
+                </Button>
               </div>
-              <Select
-                value={selectedCategory}
-                onValueChange={setSelectedCategory}
-              >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
-                  <SelectItem value="web">Web Development</SelectItem>
-                  <SelectItem value="mobile">Mobile Development</SelectItem>
-                  <SelectItem value="ml">Machine Learning</SelectItem>
-                  <SelectItem value="blockchain">Blockchain</SelectItem>
-                  <SelectItem value="iot">IoT</SelectItem>
-                  <SelectItem value="game">Game Development</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex  sm:flex-row gap-4 w-full">
+                <div className="relative flex-1">
+                  <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
+                  <Input
+                    placeholder="Search projects..."
+                    className=" pl-8 w-full"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+                <Select
+                  value={selectedCategory}
+                  onValueChange={setSelectedCategory}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Categories</SelectItem>
+                    <SelectItem value="web">Web Development</SelectItem>
+                    <SelectItem value="mobile">Mobile Development</SelectItem>
+                    <SelectItem value="ml">Machine Learning</SelectItem>
+                    <SelectItem value="blockchain">Blockchain</SelectItem>
+                    <SelectItem value="iot">IoT</SelectItem>
+                    <SelectItem value="game">Game Development</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-            <Button onClick={() => router.push("/explore/register/project")}>
-              Create Project
-            </Button>
           </div>
 
           {/* Mobile Search and Filters */}

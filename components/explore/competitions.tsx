@@ -159,34 +159,42 @@ export function Competitions() {
         <div className="container py-4">
           {/* Desktop Search and Filters */}
           <div className="hidden md:flex items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
-                <Input
-                  placeholder="Search competitions..."
-                  className="w-[300px] pl-8"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
+            <div className="flex flex-col gap-4 w-full">
+              <div className="flex  items-center  gap-2 my-2 w-full">
+                <Trophy size={32} />
+                <h1 className="text-2xl md:text-3xl font-bold w-full">
+                  Competitions
+                </h1>
+                <Button
+                  onClick={() => router.push("/explore/register/competition")}
+                >
+                  Register Competition
+                </Button>
               </div>
-              <Select value={selectedType} onValueChange={setSelectedType}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="hackathon">Hackathons</SelectItem>
-                  <SelectItem value="ideathon">Ideathons</SelectItem>
-                  <SelectItem value="coding">Coding Competitions</SelectItem>
-                  <SelectItem value="design">Design Challenges</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex  sm:flex-row gap-4 w-full">
+                <div className="relative flex-1">
+                  <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
+                  <Input
+                    placeholder="Search competitions..."
+                    className="w-full pl-8"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+                <Select value={selectedType} onValueChange={setSelectedType}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Types</SelectItem>
+                    <SelectItem value="hackathon">Hackathons</SelectItem>
+                    <SelectItem value="ideathon">Ideathons</SelectItem>
+                    <SelectItem value="coding">Coding Competitions</SelectItem>
+                    <SelectItem value="design">Design Challenges</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-            <Button
-              onClick={() => router.push("/explore/register/competition")}
-            >
-              Register Competition
-            </Button>
           </div>
 
           {/* Mobile Search and Filters */}

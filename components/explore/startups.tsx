@@ -158,38 +158,50 @@ export function Startups() {
         <div className="container py-4">
           {/* Desktop Search and Filters */}
           <div className="hidden md:flex items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
-                <Input
-                  placeholder="Search startups..."
-                  className="w-[300px] pl-8"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
+            <div className="flex flex-col gap-4 w-full">
+              <div className="flex  items-center  gap-2 my-2 w-full">
+                <Rocket size={32} />
+                <h1 className="text-2xl md:text-3xl font-bold w-full">
+                  Startups
+                </h1>
+                <Button
+                  onClick={() => router.push("/explore/register/startup")}
+                >
+                  List Startup
+                </Button>
               </div>
-              <Select
-                value={selectedIndustry}
-                onValueChange={setSelectedIndustry}
-              >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Industry" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Industries</SelectItem>
-                  <SelectItem value="tech">Technology</SelectItem>
-                  <SelectItem value="health">Healthcare</SelectItem>
-                  <SelectItem value="edu">Education</SelectItem>
-                  <SelectItem value="finance">Finance</SelectItem>
-                  <SelectItem value="ecommerce">E-Commerce</SelectItem>
-                  <SelectItem value="sustainability">Sustainability</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex  sm:flex-row gap-4 w-full">
+                <div className="relative flex-1">
+                  <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
+                  <Input
+                    placeholder="Search startups..."
+                    className="w-full pl-8"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+                <Select
+                  value={selectedIndustry}
+                  onValueChange={setSelectedIndustry}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Industry" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Industries</SelectItem>
+                    <SelectItem value="tech">Technology</SelectItem>
+                    <SelectItem value="health">Healthcare</SelectItem>
+                    <SelectItem value="edu">Education</SelectItem>
+                    <SelectItem value="finance">Finance</SelectItem>
+                    <SelectItem value="ecommerce">E-Commerce</SelectItem>
+                    <SelectItem value="sustainability">
+                      Sustainability
+                    </SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-            <Button onClick={() => router.push("/explore/register/startup")}>
-              List Startup
-            </Button>
           </div>
 
           {/* Mobile Search and Filters */}

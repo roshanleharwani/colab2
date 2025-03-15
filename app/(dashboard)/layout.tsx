@@ -16,8 +16,8 @@ export default function ExploreLayout({
       <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-14 items-center justify-between">
           <Link href="/explore" className="flex items-center gap-2 md:ml-10">
-            <Code2 className="h-6 w-6" />
-            <div className="font-bold">CoLab</div>
+            <Code2 className="md:size-[38px] size-[30px]" />
+            <div className="font-bold text-2xl">CoLab</div>
           </Link>
 
           <UserDropdown />
