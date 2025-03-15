@@ -8,7 +8,15 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Menu, Trophy, Rocket, FolderGit2, Bell, LogOut } from "lucide-react";
+import {
+  Menu,
+  Trophy,
+  Rocket,
+  FolderGit2,
+  Bell,
+  LogOut,
+  LightbulbIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -29,6 +37,11 @@ const navigationLinks = [
     title: "Startups",
     icon: Rocket,
     href: "/explore/startups",
+  },
+  {
+    title: "ideas",
+    icon: LightbulbIcon,
+    href: "/explore/ideas",
   },
   {
     title: "Notifications",

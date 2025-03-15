@@ -3,26 +3,28 @@ import mongoose, { Schema, type Document } from "mongoose"
 export interface IIdea extends Document {
   title: string
   description: string
-  category: string
   author: {
+    id: string
     name: string
-    regNumber: string
     avatar?: string
   }
-  tags: string[]
-  likes: number
+  createdAt: Date
+  updatedAt: Date
+  likes: Array<{
+    userId: string
+    createdAt: Date
+  }>
   comments: Array<{
+    _id: string
     author: {
+      id: string
       name: string
-      regNumber: string
       avatar?: string
     }
     content: string
     createdAt: Date
   }>
-  status: "open" | "in-progress" | "implemented"
-  createdAt: Date
-  updatedAt: Date
+  tags: string[]
 }
 
 const IdeaSchema = new Schema(
@@ -31,7 +33,7 @@ const IdeaSchema = new Schema(
       type: String,
       required: [true, "Title is required"],
       trim: true,
-      minlength: [4, "Title must be at least 4 characters"],
+      minlength: [3, "Title must be at least 3 characters"],
       maxlength: [100, "Title must not exceed 100 characters"],
     },
     description: {
@@ -39,40 +41,20 @@ const IdeaSchema = new Schema(
       required: [true, "Description is required"],
       minlength: [10, "Description must be at least 10 characters"],
     },
-    category: {
-      type: String,
-      required: [true, "Category is required"],
-      enum: ["tech", "education", "social", "environment", "health", "other"],
-    },
     author: {
+      id: {
+        type: String,
+        required: [true, "Author ID is required"],
+      },
       name: {
         type: String,
         required: [true, "Author name is required"],
       },
-      regNumber: {
-        type: String,
-        required: [true, "Registration number is required"],
-      },
       avatar: String,
     },
-    tags: [
+    likes: [
       {
-        type: String,
-        trim: true,
-      },
-    ],
-    likes: {
-      type: Number,
-      default: 0,
-    },
-    comments: [
-      {
-        author: {
-          name: String,
-          regNumber: String,
-          avatar: String,
-        },
-        content: {
+        userId: {
           type: String,
           required: true,
         },
@@ -82,22 +64,42 @@ const IdeaSchema = new Schema(
         },
       },
     ],
-    status: {
-      type: String,
-      enum: ["open", "in-progress", "implemented"],
-      default: "open",
-    },
+    comments: [
+      {
+        author: {
+          id: {
+            type: String,
+            required: true,
+          },
+          name: {
+            type: String,
+            required: true,
+          },
+          avatar: String,
+        },
+        content: {
+          type: String,
+          required: true,
+          minlength: [1, "Comment cannot be empty"],
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
+    tags: [String],
   },
   {
     timestamps: true,
   },
 )
 
-// Indexes for better query performance
+// Create indexes for better query performance
 IdeaSchema.index({ title: "text", description: "text" })
-IdeaSchema.index({ category: 1 })
-IdeaSchema.index({ "author.regNumber": 1 })
 IdeaSchema.index({ createdAt: -1 })
+IdeaSchema.index({ "author.id": 1 })
+IdeaSchema.index({ "likes.userId": 1 })
 
 export const Idea = mongoose.models.Idea || mongoose.model<IIdea>("Idea", IdeaSchema)
 

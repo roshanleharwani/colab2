@@ -8,6 +8,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -230,7 +231,23 @@ export function Competitions() {
       <main className="flex-1 overflow-auto">
         <div className="container py-6 h-full">
           {isLoading ? (
-            <div className="text-center py-8">Loading competitions...</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <Card key={i} className="animate-pulse">
+                  <CardHeader className="space-y-2">
+                    <div className="h-6 bg-muted rounded w-3/4"></div>
+                    <div className="h-4 bg-muted rounded w-1/2"></div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-4 bg-muted rounded w-full mb-2"></div>
+                    <div className="h-4 bg-muted rounded w-5/6"></div>
+                  </CardContent>
+                  <CardFooter>
+                    <div className="h-8 bg-muted rounded w-full"></div>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
           ) : error ? (
             <div className="text-center py-8 text-red-500">Error: {error}</div>
           ) : !filteredCompetitions || filteredCompetitions.length === 0 ? (

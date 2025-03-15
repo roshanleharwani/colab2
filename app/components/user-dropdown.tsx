@@ -13,10 +13,35 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { User, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-
+import { useEffect, useState } from "react";
+interface User {
+  name: string;
+  email: string;
+  _id: string;
+}
+const demoUser: User = {
+  name: "user",
+  email: "user@example.com",
+  _id: "1234",
+};
 export function UserDropdown() {
+  const [user, setUser] = useState<User>(demoUser);
+  useEffect(() => {
+    const fetcher = async () => {
+      const response = await fetch("/api/user");
+      if (response.ok) {
+        const userData: User = await response.json();
+        setUser(userData);
+        localStorage.setItem("userName", userData.name);
+        localStorage.setItem("userEmail", userData.email);
+        localStorage.setItem("userId", userData._id);
+      } else {
+        console.error("Unable to find user");
+      }
+    };
+    fetcher();
+  }, []);
   const { theme, setTheme } = useTheme();
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -30,9 +55,9 @@ export function UserDropdown() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">Username</p>
-            <p className="text-xs leading-none text-muted-foreground">
-              user@example.com
+            <p className="text-sm font-medium leading-none">{user.name}</p>
+            <p className="text-xs leading-none text-muted-foreground ">
+              {user.email.substring(0, 30) + ".."}
             </p>
           </div>
         </DropdownMenuLabel>

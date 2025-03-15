@@ -28,7 +28,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "components/explore/projects.tsx",
-    "app/api/ideas/[id]/like/route.ts"
+    "app/api/ideas/[id]/like/route.js"
   ],
   "exclude": ["node_modules"]
 }

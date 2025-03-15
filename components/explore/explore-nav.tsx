@@ -1,6 +1,13 @@
 "use client";
 
-import { LogOut, Trophy, Rocket, FolderGit2, Bell } from "lucide-react";
+import {
+  LogOut,
+  Trophy,
+  Rocket,
+  FolderGit2,
+  Bell,
+  LightbulbIcon,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 import {
   Sidebar,
@@ -27,6 +34,11 @@ const menuItems = [
     title: "Startups",
     icon: Rocket,
     href: "/explore/startups",
+  },
+  {
+    title: "ideas",
+    icon: LightbulbIcon,
+    href: "/explore/ideas",
   },
   {
     title: "Notifications",
