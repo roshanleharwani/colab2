@@ -41,5 +41,5 @@ export async function middleware(req: NextRequest) {
 
 // Apply middleware to protected routes
 export const config = {
-  matcher: ['/sign-in', '/sign-up','/explore/register/:path*','/explore/profile/:path*'],
+  matcher: ['/sign-in', '/sign-up','/explore/:path*'],
 };

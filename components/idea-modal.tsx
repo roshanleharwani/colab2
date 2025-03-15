@@ -11,11 +11,13 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { ThumbsUp, MessageSquare, Calendar, Send } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+import { DialogClose } from "@radix-ui/react-dialog";
 
 interface Author {
   id: string;
@@ -46,7 +48,11 @@ interface Idea {
 
 interface IdeaModalProps {
   idea: Idea;
-  currentUser: Author;
+  currentUser: {
+    id: string;
+    name: string;
+    avatar?: string;
+  } | null;
   isLiked: boolean;
   onLike: () => void;
   onAddComment: (content: string) => void;
@@ -65,6 +71,15 @@ export function IdeaModal({
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!currentUser) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to comment",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (!comment.trim()) return;
 
     try {
@@ -80,9 +95,8 @@ export function IdeaModal({
     <>
       <DialogHeader>
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center ">
             <Avatar>
-              <AvatarImage src={idea.author.avatar || "/placeholder.svg"} />
               <AvatarFallback>{idea.author.name[0]}</AvatarFallback>
             </Avatar>
             <div>
@@ -150,9 +164,6 @@ export function IdeaModal({
             idea.comments.map((comment) => (
               <div key={comment._id} className="flex gap-3">
                 <Avatar className="h-8 w-8 flex-shrink-0">
-                  <AvatarImage
-                    src={comment.author.avatar || "/placeholder.svg"}
-                  />
                   <AvatarFallback>{comment.author.name[0]}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
@@ -172,17 +183,22 @@ export function IdeaModal({
         <div className="mt-6">
           <form onSubmit={handleSubmitComment} className="flex gap-3">
             <Avatar className="h-8 w-8 flex-shrink-0">
-              <AvatarImage src={currentUser.avatar || "/placeholder.svg"} />
-              <AvatarFallback>{currentUser.name[0]}</AvatarFallback>
+              <AvatarFallback>{currentUser?.name?.[0] || "?"}</AvatarFallback>
             </Avatar>
             <div className="flex-1 flex gap-2">
               <Input
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                placeholder="Add a comment..."
+                placeholder={
+                  currentUser ? "Add a comment..." : "Please log in to comment"
+                }
                 className="flex-1"
+                disabled={!currentUser}
               />
-              <Button type="submit" disabled={!comment.trim() || isSubmitting}>
+              <Button
+                type="submit"
+                disabled={!currentUser || !comment.trim() || isSubmitting}
+              >
                 {isSubmitting ? (
                   <span className="animate-pulse">...</span>
                 ) : (
@@ -195,7 +211,9 @@ export function IdeaModal({
       </div>
 
       <DialogFooter className="mt-6">
-        <Button variant="outline">Close</Button>
+        <DialogClose asChild>
+          <Button variant="outline">Close</Button>
+        </DialogClose>
       </DialogFooter>
     </>
   );

@@ -38,7 +38,7 @@ interface IdeaFormProps {
     id: string;
     name: string;
     avatar?: string;
-  };
+  } | null;
   onIdeaCreated: (idea: any) => void;
   onCancel: () => void;
 }
@@ -62,6 +62,16 @@ export function IdeaForm({
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    // Check if user is logged in
+    if (!currentUser) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to post ideas",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       setIsSubmitting(true);
 
@@ -74,7 +84,7 @@ export function IdeaForm({
         authorAvatar: currentUser.avatar || null,
       };
 
-      console.log("Submitting idea data:", ideaData); // Log the data being sent
+      console.log("Submitting idea data:", ideaData);
 
       const response = await fetch("/api/ideas", {
         method: "POST",
@@ -131,7 +141,7 @@ export function IdeaForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="title"

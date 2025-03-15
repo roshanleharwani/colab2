@@ -17,7 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Dialog,
   DialogContent,
@@ -39,16 +39,30 @@ import {
   Calendar,
   Plus,
   Send,
+  LightbulbIcon,
   SlidersHorizontal,
 } from "lucide-react";
 import { IdeaForm } from "@/components/idea-form";
 import { IdeaModal } from "@/components/idea-modal";
+import { ExploreSidebar } from "@/components/explore/explore-sidebar";
 
-// Mock user for demo purposes
-const currentUser = {
-  id: "user123",
-  name: "John Doe",
-  avatar: "/placeholder.svg",
+// Get current user from localStorage
+const getCurrentUser = () => {
+  if (typeof window !== "undefined") {
+    const userId = localStorage.getItem("userId");
+    const userName = localStorage.getItem("userName");
+
+    if (!userId || !userName) {
+      return null;
+    }
+
+    return {
+      id: userId,
+      name: userName,
+      avatar: "/placeholder.svg", // Default avatar
+    };
+  }
+  return null;
 };
 
 interface Idea {
@@ -90,6 +104,17 @@ export default function IdeasPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userLikes, setUserLikes] = useState<Record<string, boolean>>({});
+  const [currentUser, setCurrentUser] = useState<{
+    id: string;
+    name: string;
+    avatar: string;
+  } | null>(null);
+
+  // Get current user on component mount
+  useEffect(() => {
+    const user = getCurrentUser();
+    setCurrentUser(user);
+  }, []);
 
   // Fetch ideas
   useEffect(() => {
@@ -121,14 +146,16 @@ export default function IdeasPage() {
 
         setIdeas(formattedData);
 
-        // Initialize user likes
-        const likes: Record<string, boolean> = {};
-        formattedData.forEach((idea: Idea) => {
-          likes[idea._id] = idea.likes.some(
-            (like) => like.userId === currentUser.id
-          );
-        });
-        setUserLikes(likes);
+        // Initialize user likes if user is logged in
+        if (currentUser) {
+          const likes: Record<string, boolean> = {};
+          formattedData.forEach((idea: Idea) => {
+            likes[idea._id] = idea.likes.some(
+              (like) => like.userId === currentUser.id
+            );
+          });
+          setUserLikes(likes);
+        }
       } catch (error) {
         console.error("Error fetching ideas:", error);
         setError("Failed to load ideas. Please try again later.");
@@ -138,10 +165,19 @@ export default function IdeasPage() {
     };
 
     fetchIdeas();
-  }, [searchQuery, sortBy]);
+  }, [searchQuery, sortBy, currentUser]);
 
   // Handle like/unlike
   const handleLike = async (ideaId: string) => {
+    if (!currentUser) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to like ideas",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const response = await fetch(`/api/ideas/${ideaId}/like`, {
         method: "POST",
@@ -206,6 +242,15 @@ export default function IdeasPage() {
 
   // Handle adding a comment
   const handleAddComment = async (ideaId: string, content: string) => {
+    if (!currentUser) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to comment",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const response = await fetch(`/api/ideas/${ideaId}/comments`, {
         method: "POST",
@@ -279,25 +324,39 @@ export default function IdeasPage() {
     });
   };
 
+  // Add a check for user login before opening the form
+  const handleOpenForm = () => {
+    if (!currentUser) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to post ideas",
+        variant: "destructive",
+      });
+      return;
+    }
+    setIsFormOpen(true);
+  };
+
   return (
-    <div className="container py-8">
-      <div className="flex flex-col space-y-6">
+    <div className="container py-6 md:px-2 ">
+      <div className="flex flex-col gap-2">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="flex  md:flex-row justify-between items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold">Ideas</h1>
-            <p className="text-muted-foreground">
-              Share and discover innovative ideas from the community
-            </p>
+            <div className="flex  items-center  gap-2 my-2">
+              <ExploreSidebar />
+              <LightbulbIcon />
+              <h1 className="text-3xl font-bold">Ideas</h1>
+            </div>
           </div>
 
-          <Button onClick={() => setIsFormOpen(true)}>
+          <Button onClick={handleOpenForm}>
             <Plus className="mr-2 h-4 w-4" /> Post Idea
           </Button>
         </div>
 
         {/* Search and filters */}
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex  sm:flex-row gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
@@ -380,7 +439,7 @@ export default function IdeasPage() {
                 ? "No ideas match your search criteria."
                 : "Be the first to share an idea!"}
             </p>
-            <Button onClick={() => setIsFormOpen(true)}>
+            <Button onClick={handleOpenForm}>
               <Plus className="mr-2 h-4 w-4" /> Post Idea
             </Button>
           </div>
@@ -406,9 +465,6 @@ export default function IdeasPage() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                           <Avatar className="h-6 w-6">
-                            <AvatarImage
-                              src={idea.author.avatar || "/placeholder.svg"}
-                            />
                             <AvatarFallback>
                               {idea.author.name[0]}
                             </AvatarFallback>
@@ -499,12 +555,6 @@ export default function IdeasPage() {
                                 idea.comments.map((comment) => (
                                   <div key={comment._id} className="flex gap-2">
                                     <Avatar className="h-6 w-6 flex-shrink-0">
-                                      <AvatarImage
-                                        src={
-                                          comment.author.avatar ||
-                                          "/placeholder.svg"
-                                        }
-                                      />
                                       <AvatarFallback>
                                         {comment.author.name[0]}
                                       </AvatarFallback>
@@ -534,15 +584,22 @@ export default function IdeasPage() {
 
                             <div className="flex gap-2">
                               <Avatar className="h-6 w-6 flex-shrink-0">
-                                <AvatarImage src={currentUser.avatar} />
                                 <AvatarFallback>
-                                  {currentUser.name[0]}
+                                  {currentUser?.name?.[0] || "?"}
                                 </AvatarFallback>
                               </Avatar>
                               <form
                                 className="flex-1 flex gap-2"
                                 onSubmit={(e) => {
                                   e.preventDefault();
+                                  if (!currentUser) {
+                                    toast({
+                                      title: "Authentication required",
+                                      description: "Please log in to comment",
+                                      variant: "destructive",
+                                    });
+                                    return;
+                                  }
                                   const form = e.currentTarget;
                                   const formData = new FormData(form);
                                   const content = formData.get(
@@ -557,13 +614,19 @@ export default function IdeasPage() {
                               >
                                 <Input
                                   name="content"
-                                  placeholder="Add a comment..."
+                                  placeholder={
+                                    currentUser
+                                      ? "Add a comment..."
+                                      : "Please log in to comment"
+                                  }
                                   className="flex-1 h-8"
+                                  disabled={!currentUser}
                                 />
                                 <Button
                                   type="submit"
                                   size="sm"
                                   className="h-8 w-8 p-0"
+                                  disabled={!currentUser}
                                 >
                                   <Send className="h-4 w-4" />
                                 </Button>
@@ -591,11 +654,13 @@ export default function IdeasPage() {
               concise.
             </DialogDescription>
           </DialogHeader>
-          <IdeaForm
-            currentUser={currentUser}
-            onIdeaCreated={handleIdeaCreated}
-            onCancel={() => setIsFormOpen(false)}
-          />
+          {currentUser && (
+            <IdeaForm
+              currentUser={currentUser}
+              onIdeaCreated={handleIdeaCreated}
+              onCancel={() => setIsFormOpen(false)}
+            />
+          )}
         </DialogContent>
       </Dialog>
 
@@ -606,7 +671,9 @@ export default function IdeasPage() {
             <IdeaModal
               idea={selectedIdea}
               currentUser={currentUser}
-              isLiked={userLikes[selectedIdea._id] || false}
+              isLiked={
+                currentUser ? userLikes[selectedIdea._id] || false : false
+              }
               onLike={() => handleLike(selectedIdea._id)}
               onAddComment={(content) =>
                 handleAddComment(selectedIdea._id, content)
