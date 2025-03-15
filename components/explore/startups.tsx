@@ -19,7 +19,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Search, Users, Briefcase, SlidersHorizontal } from "lucide-react";
+import {
+  Search,
+  Users,
+  Briefcase,
+  SlidersHorizontal,
+  Rocket,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -188,38 +194,46 @@ export function Startups() {
 
           {/* Mobile Search and Filters */}
           <div className="md:hidden space-y-4">
-            <div className="flex items-center gap-2">
-              <ExploreSidebar />
-              <div className="relative flex-1">
-                <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
-                <Input
-                  placeholder="Search startups..."
-                  className="pl-8 w-full"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
+            <div className="flex flex-col gap-2">
+              <div className="flex  items-center  gap-2 my-2">
+                <ExploreSidebar />
+                <Rocket size={40} />
+                <h1 className="text-2xl md:text-3xl font-bold w-full">
+                  Startups
+                </h1>
+                <Button
+                  className="whitespace-nowrap"
+                  onClick={() => router.push("/explore/register/startup")}
+                >
+                  List
+                </Button>
               </div>
-              <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
-                <SheetTrigger asChild>
-                  <Button variant="outline" size="icon">
-                    <SlidersHorizontal className="h-4 w-4" />
-                  </Button>
-                </SheetTrigger>
-                <SheetContent>
-                  <SheetHeader>
-                    <SheetTitle>Filters</SheetTitle>
-                  </SheetHeader>
-                  <div className="mt-4">
-                    <FilterControls />
-                  </div>
-                </SheetContent>
-              </Sheet>
-              <Button
-                className="whitespace-nowrap"
-                onClick={() => router.push("/explore/register/startup")}
-              >
-                List
-              </Button>
+              <div className="flex  sm:flex-row gap-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
+                  <Input
+                    placeholder="Search startups..."
+                    className="pl-8 w-full"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+                <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                  <SheetTrigger asChild>
+                    <Button variant="outline" size="icon">
+                      <SlidersHorizontal className="h-4 w-4" />
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent>
+                    <SheetHeader>
+                      <SheetTitle>Filters</SheetTitle>
+                    </SheetHeader>
+                    <div className="mt-4">
+                      <FilterControls />
+                    </div>
+                  </SheetContent>
+                </Sheet>
+              </div>
             </div>
           </div>
         </div>
