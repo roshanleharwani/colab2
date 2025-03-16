@@ -27,7 +27,7 @@ export default function RootLayout({
       <body className={`${inter.className} flex min-h-full flex-col`}>
         <Toaster />
 
-        <main className="flex-1">
+        <main className="flex-1 h-full">
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
             {children}
           </ThemeProvider>

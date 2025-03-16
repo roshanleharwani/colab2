@@ -36,12 +36,12 @@ const menuItems = [
     href: "/explore/startups",
   },
   {
-    title: "ideas",
+    title: "Ideas",
     icon: LightbulbIcon,
     href: "/explore/ideas",
   },
   {
-    title: "Notifications",
+    title: "Join Requests",
     icon: Bell,
     href: "/explore/notifications",
   },

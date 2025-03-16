@@ -94,14 +94,14 @@ export function IdeaModal({
   return (
     <>
       <DialogHeader>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center ">
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center w-full">
             <Avatar>
               <AvatarFallback>{idea.author.name[0]}</AvatarFallback>
             </Avatar>
             <div>
-              <p className="font-medium">{idea.author.name}</p>
-              <div className="flex items-center text-sm text-muted-foreground">
+              <p className="font-medium md:pl-5">{idea.author.name}</p>
+              <div className="flex items-center text-sm text-muted-foreground pl-5">
                 <Calendar className="mr-1 h-3 w-3" />
                 {format(new Date(idea.createdAt), "MMMM d, yyyy 'at' h:mm a")}
               </div>

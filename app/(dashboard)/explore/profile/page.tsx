@@ -48,6 +48,7 @@ const profileFormSchema = z.object({
   degree: z.string().min(2, "Degree program is required"),
   phone: z.number().optional(),
 });
+import { UserIdeas } from "@/app/components/user-idea";
 
 const passwordFormSchema = z
   .object({
@@ -78,6 +79,22 @@ interface UserData {
   registration_number: string;
   __v: number;
 }
+const getCurrentUser = () => {
+  if (typeof window !== "undefined") {
+    const userId = localStorage.getItem("userId");
+    const userName = localStorage.getItem("userName");
+
+    if (!userId || !userName) {
+      return null;
+    }
+
+    return {
+      id: userId,
+      name: userName,
+    };
+  }
+  return null;
+};
 
 export default function ProfilePage() {
   const { toast } = useToast();
@@ -318,6 +335,7 @@ export default function ProfilePage() {
               <TabsList className="mb-6">
                 <TabsTrigger value="general">General</TabsTrigger>
                 <TabsTrigger value="security">Security</TabsTrigger>
+                <TabsTrigger value="ideas">My Ideas</TabsTrigger>
               </TabsList>
 
               <TabsContent value="general">
@@ -538,6 +556,19 @@ export default function ProfilePage() {
                         </DialogFooter>
                       </DialogContent>
                     </Dialog>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              <TabsContent value="ideas">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>My Ideas</CardTitle>
+                    <CardDescription>
+                      Manage the ideas you've shared with the community.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <UserIdeas userId={getCurrentUser()?.id || ""} />
                   </CardContent>
                 </Card>
               </TabsContent>
