@@ -2,6 +2,7 @@ import { TeamDetails } from "@/app/components/team-details";
 import { TeamMembers } from "@/app/components/team-members";
 import { JoinRequest } from "@/app/components/join-request";
 
+
 // This would come from your database
 const mockTeam = {
   id: "team1",
@@ -37,6 +38,8 @@ const mockTeam = {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function TeamPage({ params }: { params: { id: string } }) {
+ 
+  
   return (
     <div className="container mx-auto py-8 px-4">
       <TeamDetails team={mockTeam} />
