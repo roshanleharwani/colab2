@@ -66,13 +66,7 @@ export function Navbar() {
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link href="/about" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    About
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
+
               <NavigationMenuItem>
                 <Link href="/contact" legacyBehavior passHref>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
@@ -116,13 +110,7 @@ export function Navbar() {
               >
                 Competitions
               </Link>
-              <Link
-                href="/about"
-                onClick={() => setIsOpen(false)}
-                className="block px-2 py-1 text-lg"
-              >
-                About
-              </Link>
+
               <Link
                 href="/contact"
                 onClick={() => setIsOpen(false)}
