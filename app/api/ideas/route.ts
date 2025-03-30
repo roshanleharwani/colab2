@@ -10,6 +10,7 @@ export async function GET(req: Request) {
 
     const { searchParams } = new URL(req.url)
     const search = searchParams.get("search")
+    const authorId = searchParams.get("authorId")
     const sort = searchParams.get("sort") || "latest"
     const limit = Number.parseInt(searchParams.get("limit") || "20")
 
@@ -25,7 +26,9 @@ export async function GET(req: Request) {
     if (sort === "popular") {
       sortOptions = { "likes.length": -1, createdAt: -1 }
     }
-
+    if(authorId){
+      query["author.id"] = authorId
+    }
     const ideas = await Idea.find(query).sort(sortOptions).limit(limit)
 
     return NextResponse.json(ideas)
