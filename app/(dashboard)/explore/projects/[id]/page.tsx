@@ -52,6 +52,7 @@ export default function ProjectPage() {
     status: "",
     teamSize: 0,
     techStack: [],
+    githubUrl: "",
     isRecruiting: false,
     members: [],
     leader: {
@@ -83,7 +84,7 @@ export default function ProjectPage() {
     fetchProject();
   }, [id]);
   const isFullyRecruited = members.length >= project.teamSize;
-
+  console.log("Project: ", project);
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="grid gap-8 lg:grid-cols-3">

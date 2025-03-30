@@ -1,23 +1,25 @@
-"use client"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users } from "lucide-react"
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Users } from "lucide-react";
 
 interface ProjectDetailsProps {
   project: {
-    name: string
-    description: string
-    status: string
-    teamSize: number
-    techStack: string[]
-    isRecruiting: boolean
-    members: any[]
-  }
+    name: string;
+    description: string;
+    status: string;
+    teamSize: number;
+    techStack: string[];
+    isRecruiting: boolean;
+    members: any[];
+    githubUrl: string;
+  };
 }
 
 export function ProjectDetails({ project }: ProjectDetailsProps) {
-  const isFullyRecruited = project.members.length >= project.teamSize
+  const isFullyRecruited = project.members.length >= project.teamSize;
 
   return (
     <Card>
@@ -26,13 +28,25 @@ export function ProjectDetails({ project }: ProjectDetailsProps) {
           <div>
             <CardTitle className="text-2xl mb-2">{project.name}</CardTitle>
             <div className="flex items-center gap-2">
-              <Badge variant={project.status === "In Progress" ? "default" : "secondary"}>{project.status}</Badge>
+              <Badge
+                variant={
+                  project.status === "In Progress" ? "default" : "secondary"
+                }
+              >
+                {project.status}
+              </Badge>
               {project.isRecruiting && !isFullyRecruited ? (
-                <Badge variant="secondary" className="bg-primary/10 text-primary">
+                <Badge
+                  variant="secondary"
+                  className="bg-primary/10 text-primary"
+                >
                   Recruiting
                 </Badge>
               ) : (
-                <Badge variant="secondary" className="bg-muted text-muted-foreground">
+                <Badge
+                  variant="secondary"
+                  className="bg-muted text-muted-foreground"
+                >
                   Team Full
                 </Badge>
               )}
@@ -53,16 +67,30 @@ export function ProjectDetails({ project }: ProjectDetailsProps) {
         </div>
         <div>
           <h3 className="font-medium mb-2">Tech Stack</h3>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 mb-4">
             {project.techStack.map((tech) => (
               <Badge key={tech} variant="outline" className="bg-primary/5">
                 {tech}
               </Badge>
             ))}
           </div>
+
+          <div>
+            {project.githubUrl && (
+              <>
+                <h3 className="font-medium mb-2">Github link</h3>
+                <div className="m-1 ">
+                  <a className="line-clamp-1 text-sm " href={project.githubUrl}>
+                    {project.githubUrl.length < 48
+                      ? project.githubUrl
+                      : project.githubUrl.slice(0, 45) + "..."}
+                  </a>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
-

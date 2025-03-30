@@ -13,14 +13,14 @@ export async function GET(req: NextRequest, context: { params: { id: string } })
         await connect();
 
         // Fetch project details
-        const project = await Project.findById(id).select("_id name description teamSize techStack leader members status isRecruiting");
+        const project = await Project.findById(id)
         if (!project) {
             return NextResponse.json({ message: "Project not found" }, { status: 404 });
         }
 
         console.log("Project details: ", project);
 
-        let members = [];
+        const members = [];
         if (project.members.length > 0) {
             for (const member of project.members) {
                 const user = await User.findById(member.UserId).select("_id name registration_number")

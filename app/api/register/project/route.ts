@@ -62,7 +62,7 @@ export async function GET() {
     await connect()
 
     const projects = await Project.find({ isRecruiting: true })
-      .select("_id name description category projectType teamSize techStack status ")
+      .select("_id name description category projectType teamSize techStack status githubUrl ")
       .sort({ createdAt: -1 })
       
 
