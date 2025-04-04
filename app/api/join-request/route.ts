@@ -6,9 +6,12 @@ import { request } from "http"
 import User from "@/app/models/User"
 const  mongoose=require("mongoose");
 import { Project } from "@/app/models/project"
+
+
 export async function POST(req: Request) {
   try {
     await connect()
+    console.log("hello ji");
     console.log("I am here")
     const data = await req.json()
     console.log("data",data);
@@ -16,7 +19,7 @@ export async function POST(req: Request) {
     const existingRequest = await JoinRequest.findOne({
       FromUserId: data.user,
       projectId: data.projectId ,
-      status: "pending",
+      status: "accept",
     });
     console.log("existingRequest",existingRequest);
 
@@ -57,6 +60,7 @@ export async function GET(req: Request) {
     await connect()
 
     const { searchParams } = new URL(req.url)
+    console.log("searchParams",searchParams);
     const userId = searchParams.get("userId")
     console.log("userId",userId);
     if (!userId) {

@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-hot-toast";
 import useUserStore from "@/store/userStore";
+import { useToast } from "@/hooks/use-toast";
+import {useEffect} from "react";
 import {
   Card,
   CardContent,
@@ -36,17 +38,30 @@ export function JoinProjectRequest({
   project,
   isFullyRecruited,
 }: JoinProjectRequestProps) {
-  const { user } = useUserStore();
+  const {toast}=useToast();
   const [role, setRole] = useState("");
   const [message, setMessage] = useState("");
   const [isPending, setIsPending] = useState(false);
+  const [user,setUser]=useState("");
+
+  useEffect(() => {
+        const loggedInUser= localStorage.getItem("user");
+        if (loggedInUser) {
+          const userId = JSON.parse(loggedInUser);
+          console.log(userId);
+          setUser(userId);
+        }  
+    }, [])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!project.recruiting || isFullyRecruited) return;
-
+    console.log("before pending");
     setIsPending(true);
-
+    console.log("after pending");
+    console.log("project id:", project.id);
+    console.log(role);
+    console.log(message);
     try {
       // sending request to the project leader
       const response = await fetch("/api/join-request", {
@@ -59,21 +74,27 @@ export function JoinProjectRequest({
           projectId: project.id,
           role,
           message,
-          user: user._id,
+          user: user,
           leader: project.leader.id,
         }),
       });
       if (!response.ok) {
         throw new Error("Failed to send join request");
       }
-      toast.success("your request has been sent to the project leader");
+      toast({
+        title: "Join request sent",
+        description: "Your request has been sent to the project leader.",
+      })
 
       setMessage("");
       setRole("");
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      toast.error("Failed to send join request. Please try again.");
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "An unknown error occurred"
+      })
     } finally {
       setIsPending(false);
     }

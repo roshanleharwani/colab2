@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { Navbar } from "@/app/components/navbar";
 import { useRouter } from "next/navigation";
+import useUserStore from "@/store/userStore";
 import {
   Card,
   CardContent,
@@ -20,6 +21,7 @@ import {
 } from "@/components/ui/card";
 
 export default function SignInPage() {
+  const { user,setUser } = useUserStore();
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -44,11 +46,11 @@ export default function SignInPage() {
       const data = await response.json();
       if (response.ok) {
         localStorage.setItem("user", JSON.stringify(data.user._id));
-        router.push("/explore");
         toast({
           title: "Sign in successful",
           description: "Welcome back user to exploration",
         });
+        router.push("/explore");
       } else if (response.status === 401) {
         toast({
           title: "Invalid credentials",

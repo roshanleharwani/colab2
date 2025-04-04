@@ -73,16 +73,30 @@ const projectFormSchema = stepOneSchema
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
 
 export default function ProjectRegistrationPage() {
-  const { user } = useUserStore();
+  const [user,setUser]=useState("");
   const [step, setStep] = useState(1);
   const router = useRouter();
   const { toast } = useToast();
   const [techStack, setTechStack] = useState<string[]>([]);
+  useEffect(() => {
+      const loggedInUser= localStorage.getItem("user");
+      if (loggedInUser) {
+        const userId = JSON.parse(loggedInUser);
+        console.log(userId);
+        setUser(userId);
+      }  
+  }, [])
+  useEffect(() => {
+    if (user) {
+      form.reset({ ...form.getValues(), leaderId: user });
+    }
+  }, [user]);
+
 
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectFormSchema),
     defaultValues: {
-      leaderId: user?._id || "",
+      leaderId: user || "",
       name: "",
       description: "",
       category: "",

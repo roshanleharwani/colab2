@@ -9,7 +9,7 @@ const useUserStore=create(
             clearUser:()=>set({user:null})
         }),
         {
-            name:"user-storage",// unique name
+            name:"user",// unique name
             getStorage:()=>localStorage
         }
     )

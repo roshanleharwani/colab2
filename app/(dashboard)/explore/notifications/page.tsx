@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
+import { useToast } from "@/hooks/use-toast";
 import { ExploreSidebar } from "@/components/explore/explore-sidebar";
 import { BellPlusIcon } from "lucide-react";
 import Image from "next/image";
@@ -26,33 +26,10 @@ interface JoinRequest {
   role: string;
   createdAt: string;
 }
-const handleAction = async (
-  action: string,
-  requestId: string,
-  fromUser: string
-) => {
-  try {
-    const response = await fetch("/api/join-request", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        requestId,
-        status: action,
-        userId: fromUser,
-      }),
-    });
-    if (!response.ok) {
-      throw new Error("Failed while updating reqeust");
-    }
-    toast.success(`Request ${action}ed successfully`);
-  } catch (error) {
-    toast.error("Failed to update request");
-  }
-};
+
 
 const NotificationPage = () => {
+  const { toast } = useToast();
   const [user, setUser] = useState("");
   const [requests, setRequests] = useState<JoinRequest[]>([]);
   useEffect(() => {
@@ -67,6 +44,7 @@ const NotificationPage = () => {
 
   useEffect(() => {
     const fetchRequests = async () => {
+      console.log("user", user);
       try {
         const response = await fetch(`/api/join-request?userId=${user}`);
         if (!response.ok) {
@@ -75,11 +53,48 @@ const NotificationPage = () => {
         const data = await response.json();
         setRequests(data);
       } catch (error) {
-        toast.error("Failed to fetch requests");
+        toast({
+          title: "Failed to fetch requests",
+          description: "Please try again later",
+        })
       }
     };
     fetchRequests();
   }, [user]);
+  const handleAction = async (
+    action: string,
+    requestId: string,
+    fromUser: string
+  ) => {
+    try {
+      const response = await fetch("/api/join-request", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          requestId,
+          status: action,
+          userId: fromUser,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed while updating reqeust");
+      }
+      setRequests((prevRequests)=>{
+        return prevRequests.filter((request)=>request._id!==requestId)
+      })
+      toast({
+        title: `Request ${action}ed`,
+        description: `Request ${action}ed successfully`,
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to update request",
+        description: "Please try again later",
+      })
+    }
+  };
   const { theme } = useTheme();
   return (
     <div className="container mx-auto py-8 px-4 h-full">
@@ -89,7 +104,7 @@ const NotificationPage = () => {
         <h1 className="text-3xl font-bold ">Join Requests</h1>
       </header>
       <hr className=" border-gray-200 border-[0.1]" />
-      <div className="space-y-4 flex gap-4 h-full">
+      <div className="space-y-4 flex gap-4">
         {requests.length > 0 ? (
           requests.map((request) => (
             <Card key={request._id}>
