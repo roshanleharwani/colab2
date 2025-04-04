@@ -2,9 +2,6 @@
 import { NextResponse } from "next/server"
 import connect from "@/lib/connect"
 import { JoinRequest } from "@/app/models/join-request"
-import { request } from "http"
-import User from "@/app/models/User"
-const  mongoose=require("mongoose");
 import { Project } from "@/app/models/project"
 
 
