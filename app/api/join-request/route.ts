@@ -8,10 +8,8 @@ import { Project } from "@/app/models/project"
 export async function POST(req: Request) {
   try {
     await connect()
-    console.log("hello ji");
-    console.log("I am here")
+
     const data = await req.json()
-    console.log("data",data);
     // Create join request with the provided data
     const existingRequest = await JoinRequest.findOne({
       FromUserId: data.user,
@@ -53,19 +51,18 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   try {
-    console.log("I am iin here");
+
     await connect()
 
     const { searchParams } = new URL(req.url)
-    console.log("searchParams",searchParams);
     const userId = searchParams.get("userId")
-    console.log("userId",userId);
+
     if (!userId) {
       return NextResponse.json({ message: "User ID is required" }, { status: 400 })
     }
 
-    const requests = await JoinRequest.find({ ToUserId:userId, status:"pending" }).select(" _id FromUserId projectId role message createdAt").populate("FromUserId","name").populate("projectId","name")
-    console.log(requests);
+    const requests = await JoinRequest.find({ ToUserId:userId, status:"pending" }).select(" _id FromUserId projectId role message createdAt").populate("FromUserId","name")
+
 
 
     return NextResponse.json(requests)

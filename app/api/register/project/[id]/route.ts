@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import { NextResponse, NextRequest } from "next/server";
 import connect from "@/lib/connect";
 import { Project } from "@/app/models/project";

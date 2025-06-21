@@ -48,6 +48,7 @@ const menuItems = [
 ];
 import { useTheme } from "next-themes";
 import { toast } from "react-hot-toast";
+import { useEffect, useState } from "react";
 export function ExploreNav() {
   const pathname = usePathname();
   const router = useRouter();
@@ -67,6 +68,12 @@ export function ExploreNav() {
     }
   };
   const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  if (!mounted) return null;
+
   return (
     <Sidebar className="md:pt-20 px-3">
       <SidebarContent>

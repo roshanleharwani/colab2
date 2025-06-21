@@ -27,7 +27,6 @@ interface JoinRequest {
   createdAt: string;
 }
 
-
 const NotificationPage = () => {
   const { toast } = useToast();
   const [user, setUser] = useState("");
@@ -44,22 +43,27 @@ const NotificationPage = () => {
 
   useEffect(() => {
     const fetchRequests = async () => {
-      console.log("user", user);
       try {
         const response = await fetch(`/api/join-request?userId=${user}`);
+
         if (!response.ok) {
+          // Only show toast for actual errors like 500, 404, etc.
           throw new Error("Failed to fetch requests");
         }
+
         const data = await response.json();
-        setRequests(data);
+        setRequests(data); // data can be [] and it's valid
       } catch (error) {
         toast({
-          title: "Failed to fetch requests",
+          title: "No Request Found",
           description: "Please try again later",
-        })
+        });
       }
     };
-    fetchRequests();
+
+    if (user) {
+      fetchRequests();
+    }
   }, [user]);
   const handleAction = async (
     action: string,
@@ -81,9 +85,9 @@ const NotificationPage = () => {
       if (!response.ok) {
         throw new Error("Failed while updating reqeust");
       }
-      setRequests((prevRequests)=>{
-        return prevRequests.filter((request)=>request._id!==requestId)
-      })
+      setRequests((prevRequests) => {
+        return prevRequests.filter((request) => request._id !== requestId);
+      });
       toast({
         title: `Request ${action}ed`,
         description: `Request ${action}ed successfully`,
@@ -92,10 +96,15 @@ const NotificationPage = () => {
       toast({
         title: "Failed to update request",
         description: "Please try again later",
-      })
+      });
     }
   };
   const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  if (!mounted) return null;
   return (
     <div className="container mx-auto py-8 px-4 h-full">
       <header className="flex gap-4 justify-start items-center mb-2">

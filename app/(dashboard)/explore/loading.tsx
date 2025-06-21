@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
+ 
 "use client";
 import { ThreeDots } from "react-loader-spinner";
 import { useTheme } from "next-themes";
