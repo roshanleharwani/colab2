@@ -84,9 +84,11 @@ export default function SignUpPage() {
         },
         body: JSON.stringify(data),
       });
+
       if (response.ok) {
         toast.success("Account created successfully.");
-        router.push("/explore");
+
+        router.push("/sign-in");
       } else if (response.status === 409) {
         toast.error("User already exists.");
         setIsLoading(false);

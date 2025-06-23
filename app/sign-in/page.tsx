@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { Navbar } from "@/app/components/navbar";
 import { useRouter } from "next/navigation";
-import useUserStore from "@/store/userStore";
+
 import {
   Card,
   CardContent,
@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/card";
 
 export default function SignInPage() {
-  const { user,setUser } = useUserStore();
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

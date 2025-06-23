@@ -108,9 +108,10 @@ const ProjectSchema = new Schema(
       required: [true, "Requirements are required"],
       minlength: [10, "Requirements must be at least 10 characters"],
     },
-    members: [
-      MemberSchema
-    ],
+    members: {
+  type: [MemberSchema],
+  default: [],
+},
     status: {
       type: String,
       enum: ["active", "completed", "cancelled"],

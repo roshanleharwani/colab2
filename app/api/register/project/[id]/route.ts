@@ -6,7 +6,6 @@ import User from "@/app/models/User";
 
 
 export async function GET(req: NextRequest, context: { params: { id: string } }) {
-    console.log("I am here");
     
     const { id } = context.params;
     try {
@@ -18,8 +17,6 @@ export async function GET(req: NextRequest, context: { params: { id: string } })
             return NextResponse.json({ message: "Project not found" }, { status: 404 });
         }
 
-        console.log("Project details: ", project);
-
         const members = [];
         if (project.members.length > 0) {
             for (const member of project.members) {
@@ -29,9 +26,6 @@ export async function GET(req: NextRequest, context: { params: { id: string } })
                 members.push(formattedMember);
             }
         }
-        console.log("Members: ", members);
-
-
         return NextResponse.json({ project, members});
 
     } catch (error) {

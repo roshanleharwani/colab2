@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import useUserStore from "@/store/userStore";
+
 import {
   Form,
   FormControl,
@@ -73,25 +73,24 @@ const projectFormSchema = stepOneSchema
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
 
 export default function ProjectRegistrationPage() {
-  const [user,setUser]=useState("");
+  const [user, setUser] = useState("");
   const [step, setStep] = useState(1);
   const router = useRouter();
   const { toast } = useToast();
   const [techStack, setTechStack] = useState<string[]>([]);
   useEffect(() => {
-      const loggedInUser= localStorage.getItem("user");
-      if (loggedInUser) {
-        const userId = JSON.parse(loggedInUser);
-        console.log(userId);
-        setUser(userId);
-      }  
-  }, [])
+    const loggedInUser = localStorage.getItem("user");
+    if (loggedInUser) {
+      const userId = JSON.parse(loggedInUser);
+      console.log(userId);
+      setUser(userId);
+    }
+  }, []);
   useEffect(() => {
     if (user) {
       form.reset({ ...form.getValues(), leaderId: user });
     }
   }, [user]);
-
 
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectFormSchema),

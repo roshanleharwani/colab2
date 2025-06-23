@@ -34,7 +34,6 @@ export async function POST(req: Request) {
       isRecruiting: true,
       status:"active"
     })
-    console.log('project', project);
 
     return NextResponse.json(
       {
